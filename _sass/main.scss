@@ -1,0 +1,77 @@
+$body-bg: #ffffff;
+$body-color: #001F3D;
+$theme-colors: (
+  "primary": #DC7726,
+  "secondary": #D89C60,
+  "danger": #ff4136,
+  "dark": #045174,
+  "light": #E1ECF0
+);
+
+$font-family-sans-serif: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+$font-size-base: 1.1rem;
+$line-height-base: 1.5;
+
+$container-max-widths: (
+  md: 770px,
+  lg: 990px,
+  xl: 1400px
+);
+
+$fa-font-path: "../fonts/fontawesome";
+
+/* the top-level nav */
+nav[data-toggle='toc'] .nav > li > a {
+  font-size: 18px !important;
+  @extend .text-primary;
+}
+/* the sub-nav */
+nav[data-toggle='toc'] .nav .nav > li > a {
+  font-size: 16px !important;
+  @extend .text-primary;
+}
+
+div[manual='true'] h1 {
+  @extend .rounded;
+  @extend .p-1;
+  @extend .text-white;  
+  @extend .text-center;
+  @extend .bg-primary;
+}
+
+div[manual='true'] h2 {
+  @extend .rounded;
+  @extend .p-1;
+  @extend .pl-2;
+  @extend .text-white;
+  @extend .bg-secondary;
+}
+
+div[manual='true'] h3 {  
+  @extend .p-1;  
+  @extend .font-weight-bold;
+  @extend .text-secondary;
+}
+
+div[manual='true'] h4 {
+  @extend .rounded;
+  @extend .p-1; 
+  @extend .font-weight-bold;
+  @extend .text-muted;
+}
+
+.navbar {
+  min-height: 100px;
+}
+
+@media (max-width: 768px) {
+  /* override stickyness so that the navigation does not follow scrolling */
+  nav[id="toc"] {
+    margin-bottom: 42px;
+    position: static;
+  }
+  
+  nav[id='toc'] .nav .nav {
+    display: block;
+  }
+}

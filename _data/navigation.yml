@@ -1,0 +1,25 @@
+#_data/navbar.yml
+left:
+  - name: Quick Start
+    link: /user_guide/quick_start.html
+  - name: API
+    link: https://docs.rs/nalgebra/0.21.1/nalgebra/
+  - name: Examples
+    link: #
+right:  
+  - name: About Us
+    link: /about.html
+dropdown:
+  - name: Getting Started
+    link: /user_guide/quick_start.html
+  - name: Supervised learning
+    link: #
+  - name: Unsupervised learning
+    link: #
+  - name: Clustering
+    link: #
+  - name: Examples
+    link: #
+  - name: Developer's Guide
+    link: #
+
