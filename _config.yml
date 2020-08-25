@@ -8,6 +8,7 @@ years_updated: 2020-2021
 
 exclude:
   - scripts
+  - smartcorelib.code-workspace
 
 plugins:
   - jekyll-seo-tag
