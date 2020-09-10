@@ -1,56 +1,153 @@
 ---
 layout: manual
 title:  "Getting Started"
-version: 0.1.0
 ---
 
 # Getting Started
 
-I hope you like it!
+Welcome to *SmartCore*, the most complete machine learning library for Rust! In *SmartCore* you will find implementation of the most common machine learning (ML) algorithms and tools:
 
-## What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+* __Regression__: Linear Regression (OLS), Decision Tree Regressor, Random Forest Regressor, K Nearest Neighbors
+* __Classification__: Logistic Regressor, Decision Tree Classifier, Random Forest Classifier, Supervised Nearest Neighbors (KNN)
+* __Clustering__: K-Means
+* __Matrix Decomposition__: PCA, LU, QR, SVD, EVD
+* __Distance Metrics__: Euclidian, Minkowski, Manhattan, Hamming, Mahalanobis
+* __Evaluation Metrics__: Accuracy, AUC, Recall, Precision, F1, Mean Absolute Error, Mean Squared Error, R2
 
-## Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+All of these algorithms are implemented in Rust. 
 
+Why another machine learning library for Rust, you might ask? At the time of writing of this guide there are at least three [general-purpose ML libraries](http://www.arewelearningyet.com/) for Rust.
+Most of these libraries either do not support all of the algorithms that are implemented in *SmartCore* or aren't integrated with [nalgebra](https://nalgebra.org/) and [ndarray](https://github.com/rust-ndarray/ndarray).
+While *SmartCore* is integrated with both libraries you can also use standard Rust data types, like vectors and arrays with all of the algorithms implemented here if you prefer not to depend on any linear algebra library.
 
-## Where does it come from?
-Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+We developed *SmartCore* to promote scientific computing in Rust. Our goal is to build an open library that has accurate, numerically stable and well documented implementations of the most well-known and widely used machine learning methods.
 
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+## Quick start
 
-## Where can I get some?
-There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+To start using *SmartCore* simply add the following to your Cargo.toml file:
 
-## The standard Lorem Ipsum passage, used since the 1500s
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+```
+[dependencies]
+smartcore = "0.1.0"
+```
 
-## Section 1
-"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+You will also have to decide which linear algebra library to use with *SmartCore*. We support:
+* [ndarray](https://docs.rs/ndarray) - provides an n-dimensional container for general elements and for numerics.
+* [nalgebra](https://docs.rs/nalgebra/) - general-purpose linear algebra for computer graphics and computer physics.
 
-## Section 2
-"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
-"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+If you prefer not to depend on any external libraries other than *SmartCore* you can use all algorithms implemented here with Rust [Vec](https://doc.rust-lang.org/std/vec/struct.Vec.html) and [array](https://doc.rust-lang.org/std/primitive.array.html). 
 
-### Section 2.1
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+### Iris dataset
 
-### Section 2.2
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+You are ready to fit your first ML algorithm to [Iris dataset](https://archive.ics.uci.edu/ml/datasets/iris). The Iris Dataset was introduced by the Ronald Fisher and is by far the best known database to be found in the pattern recognition literature. It consists of 50 samples from each of three species of Iris (Iris setosa, Iris virginica and Iris versicolor). Four features were measured from each sample: the length and the width of the sepals and petals, in centimeters. It is often used in classification and clustering examples. First let's fit K-Nearest Neighbors algorithm to Iris data:
 
-#### Section 2.2.1
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+```rust
+use smartcore::dataset::iris::load_dataset;
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+use smartcore::neighbors::knn_classifier::*;
+use smartcore::math::distance::Distances;
+use smartcore::metrics::accuracy;
 
-#### Section 2.2.2
+// Load Iris dataset 
+let iris_data = load_dataset();
+// Turn Iris dataset into NxM matrix
+let x = DenseMatrix::from_array(iris_data.num_samples, iris_data.num_features, &iris_data.data);
+// These are our target class labels
+let y = iris_data.target;
 
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
-"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+// Fit KNN classifier to Iris dataset
+let knn = KNNClassifier::fit(
+    &x,
+    &y,        
+    Distances::euclidian(), // We use euclidian distance here. 
+    Default::default()
+);
+let y_hat = knn.predict(&x); // Predict class labels
 
-## Section 3
-"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."
+// Calculate training error
+println!("accuracy: {}", accuracy(&y, &y_hat)); // accuracy: 0.96
+```
+Most of algorithms in *SmartCore* follow the same template when it comes to function names. There is usually a static function `fit` that fits model to your data and a function `predict` to predict labels or target values from new data. All mandatory parameters of the model are declared as parameters of function `fit`. All optional parameters are hidden behind `Default::default()`.
+
+Now, if you want to fit Logistic Regression to your data you don't have to change your code a lot:
+
+```rust
+use smartcore::dataset::iris::load_dataset;
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+use smartcore::linear::logistic_regression::LogisticRegression;
+use smartcore::metrics::accuracy;
+
+// Load Iris dataset 
+let iris_data = load_dataset();
+// Turn Iris dataset into NxM matrix
+let x = DenseMatrix::from_array(iris_data.num_samples, iris_data.num_features, &iris_data.data);
+// These are our target class labels
+let y = iris_data.target;
+
+// Fit Logistic Regression to Iris dataset
+let lr = LogisticRegression::fit(&x, &y);
+let y_hat = lr.predict(&x); // Predict class labels
+
+// Calculate training error
+println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
+```
+
+Our performance metric (accuracy) went up two percentage points! Nice work!
+
+## High-level overview
+
+Majority of machine learning algorithms rely on linear algebra and optimization methods at it's core. To make *SmartCore* as flexible and expandable as possible we decided not to build it on top of any specific linear algebra or optimization library. Instead, machine learning algorithms in *SmartCore* use an abstraction layer with operations on multidimensional arrays and maximization/minimization routines. This allow us to quickly develop and plug-in a new type of matrix or vector as long as it implements all abstract methods from this layer.
+
+<figure class="image" align="center">
+  <img src="/assets/imgs/architecture.svg" alt="SmartCore's architecture">
+  <figcaption>Figure 1. SmartCore's architecture represented as layers.</figcaption>
+</figure>
+
+As you see from Figure 1 we have 3 layers with all the machine learning models defined at the second level. Model evaluation and selection deserves its own layer since functions defined here take models or predicted values as input. 
+
+## Linear algebra libraries
+
+All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra as `ndarray` and `nalgebra`. To enable both libraries use thes compilation features:
+
+```
+[dependencies]
+smartcore = { version = "0.1.0", features=["nalgebra-bindings", "ndarray-bindings"]}
+```
+
+Here is how you would fit Logistic Regression to Iris dataset loaded as `ndarray` matrix:
+
+```rust
+use smartcore::dataset::iris::load_dataset;
+// ndarray wrapper
+use ndarray::Array;
+// Imports for Logistic Regression
+use smartcore::linear::logistic_regression::LogisticRegression;
+// Model performance
+use smartcore::metrics::accuracy;
+
+// Load Iris dataset 
+let iris_data = load_dataset();
+// Turn Iris dataset into NxM matrix
+let x = Array::from_shape_vec(
+    (iris_data.num_samples, iris_data.num_features), iris_data.data).unwrap();
+
+// These are our target class labels
+let y = Array::from_shape_vec(iris_data.num_samples, iris_data.target).unwrap();
+
+// Fit Logistic Regression to Iris dataset
+let lr = LogisticRegression::fit(&x, &y);
+let y_hat = lr.predict(&x); // Predict class labels
+
+// Calculate training error
+println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
+```
+
+As you might have noticed already the only difference between this example and the previous are lines where `x` and `y` variables are defined. 
+
+## What can I do next?
+
+If you are done reading through this page we would recommend to go a specific section that interests you most. User's manual is organized into these broad categories:
+* [Supervised Learning](/user_guide/supervised.html), in this section you will find tree-based, linear and KNN models.
+* [Unsupervised Learning](/user_guide/unsupervised.html), unsupervised methods like clustering and matrix decomposition methods.
+* [Model Selection](/user_guide/model_selection.html), varios metrics for model evaluation.
+* [Developer's Guide](/user_guide/developer.html), would you like to contribute? Here you will find useful guidelines and rubrics to consider.

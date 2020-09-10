@@ -1,7 +1,6 @@
 ---
 layout: manual
 title:  "Getting Started"
-version: 0.1.0
 ---
 
 # Access documentation for other versions
