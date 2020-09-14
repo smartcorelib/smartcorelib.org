@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: manual
 title:  "Model Selection and Evaluation"
 ---
 

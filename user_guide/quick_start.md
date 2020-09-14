@@ -24,7 +24,7 @@ We developed *SmartCore* to promote scientific computing in Rust. Our goal is to
 
 ## Quick start
 
-To start using *SmartCore* simply add the following to your Cargo.toml file:
+To start using *SmartCore* simply add the following to your `Cargo.toml` file:
 
 ```
 [dependencies]
@@ -37,9 +37,9 @@ You will also have to decide which linear algebra library to use with *SmartCore
 
 If you prefer not to depend on any external libraries other than *SmartCore* you can use all algorithms implemented here with Rust [Vec](https://doc.rust-lang.org/std/vec/struct.Vec.html) and [array](https://doc.rust-lang.org/std/primitive.array.html). 
 
-### Iris dataset
+### Iris Flower Classification
 
-You are ready to fit your first ML algorithm to [Iris dataset](https://archive.ics.uci.edu/ml/datasets/iris). The Iris Dataset was introduced by the Ronald Fisher and is by far the best known database to be found in the pattern recognition literature. It consists of 50 samples from each of three species of Iris (Iris setosa, Iris virginica and Iris versicolor). Four features were measured from each sample: the length and the width of the sepals and petals, in centimeters. It is often used in classification and clustering examples. First let's fit K-Nearest Neighbors algorithm to Iris data:
+You are ready to fit your first ML algorithm to [Iris dataset](https://archive.ics.uci.edu/ml/datasets/iris). The Iris Dataset was introduced by the Ronald Fisher and is by far the best known database to be found in the pattern recognition literature. It consists of 50 samples from each of three species of Iris (Iris setosa, Iris virginica and Iris versicolor). Four features were measured from each sample: the length and the width of the sepals and petals, in centimeters. It is often used in classification and clustering examples. First let's fit [K-Nearest Neighbors]({{site.api_base_url}}/neighbors/index.html) algorithm to Iris data:
 
 ```rust
 use smartcore::dataset::iris::load_dataset;
@@ -69,7 +69,7 @@ println!("accuracy: {}", accuracy(&y, &y_hat)); // accuracy: 0.96
 ```
 Most of algorithms in *SmartCore* follow the same template when it comes to function names. There is usually a static function `fit` that fits model to your data and a function `predict` to predict labels or target values from new data. All mandatory parameters of the model are declared as parameters of function `fit`. All optional parameters are hidden behind `Default::default()`.
 
-Now, if you want to fit Logistic Regression to your data you don't have to change your code a lot:
+Now, if you want to fit [Logistic Regression]({{site.api_base_url}}/linear/logistic_regression/index.html) to your data you don't have to change your code a lot:
 
 ```rust
 use smartcore::dataset::iris::load_dataset;
@@ -96,18 +96,22 @@ Our performance metric (accuracy) went up two percentage points! Nice work!
 
 ## High-level overview
 
-Majority of machine learning algorithms rely on linear algebra and optimization methods at it's core. To make *SmartCore* as flexible and expandable as possible we decided not to build it on top of any specific linear algebra or optimization library. Instead, machine learning algorithms in *SmartCore* use an abstraction layer with operations on multidimensional arrays and maximization/minimization routines. This allow us to quickly develop and plug-in a new type of matrix or vector as long as it implements all abstract methods from this layer.
+Majority of machine learning algorithms rely on linear algebra and optimization methods at it's core. To make *SmartCore* as flexible and expandable as possible we decided not to build it on top of any specific linear algebra or optimization library. Instead, machine learning algorithms in *SmartCore* use an abstraction layer where operations on multidimensional arrays and maximization/minimization routines are defined. This allow us to quickly develop and plug-in a new type of matrix or vector as long as it implements all abstract methods from this layer. 
+
+All routines from optimization module are not available directly but we plan to make optimization library public once it is mature enough. 
+
+While functions from linear algebra module are public you should not use them directly because this module is still unstable and we plan to add and remove functions in the future. We opened these functions only to let anyone add implementations of other types of matrices that are currently not supported by *SmartCore*. Please see [Developer's Guide](/user_guide/developer.html) if you want to add new implementation for your favourite matrix type.
 
 <figure class="image" align="center">
   <img src="/assets/imgs/architecture.svg" alt="SmartCore's architecture">
   <figcaption>Figure 1. SmartCore's architecture represented as layers.</figcaption>
 </figure>
 
-As you see from Figure 1 we have 3 layers with all the machine learning models defined at the second level. Model evaluation and selection deserves its own layer since functions defined here take models or predicted values as input. 
+As you see from Figure 1 we have 3 layers with all the machine learning models defined at the second level. Model evaluation and selection deserves its own layer since functions defined here take models or predicted values as input.
 
 ## Linear algebra libraries
 
-All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra as `ndarray` and `nalgebra`. To enable both libraries use thes compilation features:
+All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra such as [ndarray](https://docs.rs/ndarray) and [nalgebra](https://docs.rs/nalgebra/). To enable both libraries add these compilation features to your `Cargo.toml` file:
 
 ```
 [dependencies]
@@ -146,7 +150,7 @@ As you might have noticed already the only difference between this example and t
 
 ## What can I do next?
 
-If you are done reading through this page we would recommend to go a specific section that interests you most. User's manual is organized into these broad categories:
+If you are done reading through this page we would recommend to go to a specific section that interests you most. User's manual is organized into these broad categories:
 * [Supervised Learning](/user_guide/supervised.html), in this section you will find tree-based, linear and KNN models.
 * [Unsupervised Learning](/user_guide/unsupervised.html), unsupervised methods like clustering and matrix decomposition methods.
 * [Model Selection](/user_guide/model_selection.html), varios metrics for model evaluation.

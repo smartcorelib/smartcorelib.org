@@ -6,6 +6,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 title: "" # the name of your site, e.g. ACME Corp.
 years_updated: 2020-2021
 smartcore_version: 0.1.0
+api_base_url: "http://localhost:8080/smartcore"
 
 exclude:
   - scripts

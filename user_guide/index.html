@@ -1,0 +1,10 @@
+---
+layout: manual
+title:  "User Guide"
+---
+
+<h1>User Guide</h1>
+{% for item in site.data.navigation.dropdown %}
+    <h4><a href="{{ item.link }}">{{ item.name }}</a></h4>
+{% endfor %}
+ 
