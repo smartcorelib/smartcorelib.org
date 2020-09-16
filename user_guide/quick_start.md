@@ -26,7 +26,7 @@ We developed *SmartCore* to promote scientific computing in Rust. Our goal is to
 
 To start using *SmartCore* simply add the following to your `Cargo.toml` file:
 
-```
+```yaml
 [dependencies]
 smartcore = "0.1.0"
 ```
@@ -113,7 +113,7 @@ As you see from Figure 1 we have 3 layers with all the machine learning models d
 
 All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra such as [ndarray](https://docs.rs/ndarray) and [nalgebra](https://docs.rs/nalgebra/). To enable both libraries add these compilation features to your `Cargo.toml` file:
 
-```
+```yaml
 [dependencies]
 smartcore = { version = "0.1.0", features=["nalgebra-bindings", "ndarray-bindings"]}
 ```
