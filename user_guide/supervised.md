@@ -149,7 +149,7 @@ where \\(n\\) is number of samples in a dataset and \\(c\\) denotes the expansio
 The choice of distance metric for KNN algorithm largely depends on properties of your data. If you don't know which distance to use go with Euclidean distance function or choose metric that gives you the best performance on a hold out test set. 
 There are many other distance measures that can be used with KNN in *SmartCore*
 
-{:.table}
+{:.table .table-striped .table-bordered}
 | Distance Metric | Parameters | Description |
 |:-:|:-:|:-:|
 | [Euclidian]({{site.api_base_url}}/math/distance/euclidian/index.html) |  | \\(\sqrt{\sum_{i=1}^n (x_i-y_i)^2}\\) |
@@ -160,15 +160,87 @@ There are many other distance measures that can be used with KNN in *SmartCore*
 
 ## Linear Models
 
-classification
+Linear regression is one of the most well known and well understood algorithms in statistics and machine learning. 
+
+<figure class="image" align="center">
+  <img src="/assets/imgs/simple_regression.svg" alt="Simple linear regression">
+  <figcaption>Figure 1. Simple linear regression.</figcaption>
+</figure>
+
+The model describes the relationship between a dependent variable y (also called the response) as a function of one or more independent, or explanatory variables \\(X_i\\). The general equation for a linear model is:
+\\[y = \beta_0 + \sum_{i=1}^n \beta_iX_i + \epsilon\\]
+
+where the target value \\(y\\) is a linear combination of the features \\(X_i\\).
 
 ### Linear Regression
 
-Linear Regression
+Use `fit` method of [`LinearRegression`]({{site.api_base_url}}/linear/linear_regression/index.html) to fit Ordinary Least Squares to your data. 
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Linear Regression
+use smartcore::linear::linear_regression::LinearRegression;
+// Model performance
+use smartcore::metrics::{mean_squared_error, roc_auc_score};
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let cancer_data = boston::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    cancer_data.num_samples,
+    cancer_data.num_features,
+    &cancer_data.data,
+);
+// These are our target class labels
+let y = cancer_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+// Fit Linear Regression
+let lr = LinearRegression::fit(&x_train, &y_train, Default::default());
+let y_hat_lr = lr.predict(&x_test);
+// Calculate test error
+println!("MSE Logistic Regression: {}", mean_squared_error(&y_test, &y_hat_lr));
+```
+
+By default, *SmartCore* uses [SVD Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to find estimates of \\(\beta_i\\) that minimizes the sum of the squared residuals. While SVD Decomposition provides the most stable solution, you might decide to go with [QR Decomposition](https://en.wikipedia.org/wiki/QR_decomposition) since this approach is more computationally efficient than SVD Decomposition. For comparison, runtime complexity of SVD Decomposition is \\(O(mn^2 + n^3)\\) vs \\(O(mn^2 + n^3/3)\\) for QR decomposition, where \\(n\\) and \\(m\\) are dimentions of input matrix \\(X\\). Use `solver` attribute of the [`LinearRegressionParameters`]({{site.api_base_url}}/linear/linear_regression/struct.LinearRegressionParameters.html) to choose between decomposition methods.
 
 ### Logistic Regression
 
-Logistic Regression
+Logistic regression uses linear model to represent relashionship between dependent and explanatory variables. Unlike linear regression, output in logistic regression is modeled as a binary value (0 or 1) rather than a numeric value. to squish output between 0 and 1 [Sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used.
+
+In *SmartCore* Logistic Regression is represented by [`LogisticRegression`]({{site.api_base_url}}/linear/logistic_regression/index.html) struct that has methods `fit` and `predict`. 
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Logistic Regression
+use smartcore::linear::logistic_regression::LogisticRegression;
+// Model performance
+use smartcore::metrics::{mean_squared_error, roc_auc_score};
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let cancer_data = breast_cancer::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    cancer_data.num_samples,
+    cancer_data.num_features,
+    &cancer_data.data,
+);
+// These are our target class labels
+let y = cancer_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+// Logistic Regression
+let lr = LogisticRegression::fit(&x_train, &y_train);
+let y_hat_lr = lr.predict(&x_test);
+// Calculate test error
+println!("AUC Logistic Regression: {}", roc_auc_score(&y_test, &y_hat_lr));
+```
+
+*SmartCore* uses [Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS) routine to find optimal combination of \\(\beta_i\\) parameters. 
 
 ## Decision Trees
 
