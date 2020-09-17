@@ -201,7 +201,7 @@ let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
 let lr = LinearRegression::fit(&x_train, &y_train, Default::default());
 let y_hat_lr = lr.predict(&x_test);
 // Calculate test error
-println!("MSE Logistic Regression: {}", mean_squared_error(&y_test, &y_hat_lr));
+println!("MSE: {}", mean_squared_error(&y_test, &y_hat_lr));
 ```
 
 By default, *SmartCore* uses [SVD Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to find estimates of \\(\beta_i\\) that minimizes the sum of the squared residuals. While SVD Decomposition provides the most stable solution, you might decide to go with [QR Decomposition](https://en.wikipedia.org/wiki/QR_decomposition) since this approach is more computationally efficient than SVD Decomposition. For comparison, runtime complexity of SVD Decomposition is \\(O(mn^2 + n^3)\\) vs \\(O(mn^2 + n^3/3)\\) for QR decomposition, where \\(n\\) and \\(m\\) are dimentions of input matrix \\(X\\). Use `solver` attribute of the [`LinearRegressionParameters`]({{site.api_base_url}}/linear/linear_regression/struct.LinearRegressionParameters.html) to choose between decomposition methods.
@@ -237,15 +237,112 @@ let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
 let lr = LogisticRegression::fit(&x_train, &y_train);
 let y_hat_lr = lr.predict(&x_test);
 // Calculate test error
-println!("AUC Logistic Regression: {}", roc_auc_score(&y_test, &y_hat_lr));
+println!("AUC: {}", roc_auc_score(&y_test, &y_hat_lr));
 ```
 
 *SmartCore* uses [Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS) routine to find optimal combination of \\(\beta_i\\) parameters. 
 
 ## Decision Trees
 
-regression
+Classification and Regression Trees (CART) and its modern variant Random Forest are among the most powerful algorithms available in machine learning. 
+
+CART models relationship between predictor and explanatory variables as a binary tree. Each node of the tree represents a decision that is made based on an outcome of a single attribute.
+The leaf nodes of the tree represent an outcome. To make a prediction we take the mean of the training observations belonging to the leaf node for regression and the mode of observations for classification.
+
+Given a dataset with just three explanatory variables and a qualitative dependent variable the tree might look like an example below.
+
+<figure class="image" align="center">
+  <img src="/assets/imgs/tree.svg" alt="Decision Tree example">
+  <figcaption>Figure 2. An example of Decision Tree where target is a class.</figcaption>
+</figure>
+
+CART model is simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, like Logistic and Linear Regression, especially when the response can be well approximated by a linear model. Tree-based method is also non-robust which means that a small change in the data can cause a large change in the final estimated tree. That's why it is a common practice to combine prediction from multiple trees in ensemble to estimate predicted values. 
+
+In *SmartCore* both, decision and regression trees can be found in the [`tree`]({{site.api_base_url}}/tree/index.html) module. Use [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to fit decision tree and [`DecisionTreeRegressor`]({{site.api_base_url}}/tree/decision_tree_regressor/index.html) for regression. 
+
+To fit [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to [Breast Cancer]({{site.api_base_url}}/dataset/breast_cancer/index.html) dataset:
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Tree
+use smartcore::tree::decision_tree_classifier::DecisionTreeClassifier;
+use smartcore::tree::decision_tree_regressor::DecisionTreeRegressor;
+// Model performance
+use smartcore::metrics::roc_auc_score;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let cancer_data = breast_cancer::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    cancer_data.num_samples,
+    cancer_data.num_features,
+    &cancer_data.data,
+);
+// These are our target class labels
+let y = cancer_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+// Decision Tree
+let tree = DecisionTreeClassifier::fit(&x_train, &y_train, Default::default());
+let y_hat_tree = tree.predict(&x_test);
+// Calculate test error
+println!("AUC: {}", roc_auc_score(&y_test, &y_hat_tree));
+```
+
+Here we have used default parameter values but in practice you will almost always use [k-fold cross validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) or hold-out validation dataset to fine tune your parameter values. 
 
 ## Ensemble methods
 
-regression
+In ensemble learning we combine predictions from multiple base models to reduce the variance of predictions and decrease generalization error. Base models are assumed to be independent from each other. [Bagging](https://en.wikipedia.org/wiki/Bootstrap_aggregating) is one of the most streightforward ways to reduce correlation between base models in the ensemble. It works by taking repeated samples from the same training data set. As a result we generate _K_ different training data sets (bootstraps) that overlap but are not the same. We then train our base model on the each bootstrapped training set and average predictions for regression or use majority voting scheme for classification. 
+
+### Random Forest
+
+Random forest is an extension of bagging that also randomly selects a subset of features when training a tree. This improvement decorrelated the trees and hence decreases prediction error even more. Random forests have proven effective on a wide range of different predictive modeling problems. 
+
+Let's fit [Random Forest regressor]({{site.api_base_url}}/ensemble/random_forest_regressor/index.html) to Boston Housing dataset:
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Random Forest
+use smartcore::ensemble::random_forest_regressor::RandomForestRegressor;
+// Model performance
+use smartcore::metrics::mean_squared_error;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let cancer_data = boston::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    cancer_data.num_samples,
+    cancer_data.num_features,
+    &cancer_data.data,
+);
+// These are our target class labels
+let y = cancer_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+// Fit Random Forest
+let rf = RandomForestRegressor::fit(&x_train, &y_train, Default::default());
+let y_hat_rf = rf.predict(&x_test);
+// Calculate test error
+println!("MSE: {}", mean_squared_error(&y_test, &y_hat_rf));
+```
+
+You should get lower mean squared error here when compared to other methods from this manual. This is because by default Random Forest fits 100 independent trees to different bootstrapped training sets and calculates target value by averaging predictions from these trees.
+
+[Random Forest classifier]({{site.api_base_url}}/ensemble/random_forest_classifier/index.html) works in a similar manner. The only difference is that you prediction targets should be nominal or ordinal values (class label).
+
+## References
+* ["Nearest Neighbor Pattern Classification" Cover, T.M., IEEE Transactions on Information Theory (1967)](http://ssg.mit.edu/cal/abs/2000_spring/np_dens/classification/cover67.pdf)
+* ["The Elements of Statistical Learning: Data Mining, Inference, and Prediction" Trevor et al., 2nd edition](https://web.stanford.edu/~hastie/ElemStatLearn/)
+* ["An Introduction to Statistical Learning", James G., Witten D., Hastie T., Tibshirani R.](http://faculty.marshall.usc.edu/gareth-james/ISL/)
+* ["The Art of Computer Programming" Knuth, D, Vol. 3, 2nd ed, Sorting and Searching, 1998](https://www-cs-faculty.stanford.edu/~knuth/taocp.html)
+* ["Cover Trees for Nearest Neighbor" Beygelzimer et al., Proceedings of the 23rd international conference on Machine learning, ICML'06 (2006)](https://hunch.net/~jl/projects/cover_tree/cover_tree.html)
+* ["Faster cover trees." Izbicki et al., Proceedings of the 32nd International Conference on Machine Learning, ICML'15 (2015)](http://www.cs.ucr.edu/~cshelton/papers/index.cgi%3FIzbShe15)
+* ["Numerical Recipes: The Art of Scientific Computing",  Press W.H., Teukolsky S.A., Vetterling W.T, Flannery B.P, 3rd ed.](http://numerical.recipes/)
+* ["Pattern Recognition and Machine Learning", C.M. Bishop, Linear Models for Classification](https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf)
+* ["On the Limited Memory Method for Large Scale Optimization", Nocedal et al., Mathematical Programming, 1989](http://users.iems.northwestern.edu/~nocedal/PDFfiles/limited.pdf)
+* ["Classification and regression trees", Breiman, L, Friedman, J H, Olshen, R A, and Stone, C J, 1984](https://www.sciencebase.gov/catalog/item/545d07dfe4b0ba8303f728c1)
