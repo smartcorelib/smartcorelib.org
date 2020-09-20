@@ -68,14 +68,13 @@ let x = DenseMatrix::from_array(
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
-// Fit KNN classifier
-let knn = KNNClassifier::fit(
+// KNN classifier
+let y_hat_knn = KNNClassifier::fit(
     &x_train,
     &y_train,
     Distances::euclidian(),
     Default::default(),
-);
-let y_hat_knn = knn.predict(&x_test);    
+).and_then(|knn| knn.predict(&x_test)).unwrap();    
 // Calculate test error
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_knn));
 ```
@@ -108,14 +107,13 @@ let x = DenseMatrix::from_array(
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
-// Fit KNN regressor
-let knn = KNNRegressor::fit(
+// KNN regressor
+let y_hat_knn = KNNRegressor::fit(
     &x_train,
     &y_train,
     Distances::euclidian(),
     Default::default(),
-);
-let y_hat_knn = knn.predict(&x_test);
+).and_then(|knn| knn.predict(&x_test)).unwrap();
 // Calculate test error
 println!("MSE: {}", mean_squared_error(&y_test, &y_hat_knn));
 ```
@@ -197,9 +195,9 @@ let x = DenseMatrix::from_array(
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
-// Fit Linear Regression
-let lr = LinearRegression::fit(&x_train, &y_train, Default::default());
-let y_hat_lr = lr.predict(&x_test);
+// Linear Regression
+let y_hat_lr = LinearRegression::fit(&x_train, &y_train, Default::default())
+    .and_then(|lr| lr.predict(&x_test)).unwrap();
 // Calculate test error
 println!("MSE: {}", mean_squared_error(&y_test, &y_hat_lr));
 ```
@@ -234,8 +232,8 @@ let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
 // Logistic Regression
-let lr = LogisticRegression::fit(&x_train, &y_train);
-let y_hat_lr = lr.predict(&x_test);
+let y_hat_lr = LogisticRegression::fit(&x_train, &y_train)
+    .and_then(|lr| lr.predict(&x_test)).unwrap();
 // Calculate test error
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_lr));
 ```
@@ -285,8 +283,8 @@ let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
 // Decision Tree
-let tree = DecisionTreeClassifier::fit(&x_train, &y_train, Default::default());
-let y_hat_tree = tree.predict(&x_test);
+let y_hat_tree = DecisionTreeClassifier::fit(&x_train, &y_train, Default::default())
+    .and_then(|tree| tree.predict(&x_test)).unwrap();
 // Calculate test error
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_tree));
 ```
@@ -324,9 +322,9 @@ let x = DenseMatrix::from_array(
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
-// Fit Random Forest
-let rf = RandomForestRegressor::fit(&x_train, &y_train, Default::default());
-let y_hat_rf = rf.predict(&x_test);
+// Random Forest
+let y_hat_rf = RandomForestRegressor::fit(&x_train, &y_train, Default::default())
+    .and_then(|rf| rf.predict(&x_test)).unwrap();
 // Calculate test error
 println!("MSE: {}", mean_squared_error(&y_test, &y_hat_rf));
 ```

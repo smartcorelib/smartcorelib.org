@@ -6,28 +6,50 @@ title: Home
 <main role="main">
 <div class="jumbotron bg-light rounded">
   <div class="container">
-    <h1 class="display-3">Hello, world!</h1>
-    <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
+    <h1 class="display-4 text-dark text-capitalize">The most advanced machine learning library in Rust</h1>
+    <p class="lead"><strong>SmartCore is a comprehensive library for machine learning and numerical computing. 
+      The library provides a set of tools for linear algebra, numerical computing, optimization, and enables a generic, powerful yet still efficient approach to machine learning.</strong></strong></p>
+    <p><a class="btn btn-primary btn-lg" href="/user_guide/quick_start.html" role="button">Get Started with SmartCore »</a></p>
   </div>
 </div>
 <div class="container">
   <!-- Example row of columns -->
   <div class="row">
-    <div class="col-md-4">
-      <h2>Heading</h2>
-      <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-      <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+    <div class="col-md-4">      
+      <h2 class="text-dark">Supervised Learning</h2>
+      <ul class="list-inline">
+        <li class="list-inline-item">Linear and Logistic Regression</li>
+        <li class="list-inline-item">Decision Tree Regression</li>
+        <li class="list-inline-item">Random Forest Regression</li>
+        <li class="list-inline-item">Decision Tree Classifier</li>
+        <li class="list-inline-item">Random Forest Classifier</li>
+        <li class="list-inline-item">Supervised Nearest Neighbors</li>
+      </ul>      
+      <p><a class="btn btn-secondary" href="/user_guide/supervised.html" role="button">Go to supervised learning »</a></p>
+    </div>
+    <div class="col-md-4">      
+      <h2 class="text-dark">Unsupervised Learning</h2>
+      <ul class="list-inline">
+        <li class="list-inline-item">K-Means Clustering</li>
+        <li class="list-inline-item">Principal component analysis (PCA)</li>
+        <li class="list-inline-item">LU Decomposition</li>
+        <li class="list-inline-item">QR Decomposition</li>
+        <li class="list-inline-item">Singular value decomposition (SVD)</li>
+        <li class="list-inline-item">EVD Decomposition</li>        
+      </ul>      
+      <p><a class="btn btn-secondary" href="/user_guide/unsupervised.html" role="button">Go to unsupervised learning »</a></p>
     </div>
     <div class="col-md-4">
-      <h2>Heading</h2>
-      <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-      <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-    </div>
-    <div class="col-md-4">
-      <h2>Heading</h2>
-      <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-      <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+      <h2 class="text-dark">Model Evaluation</h2>
+      <ul class="list-inline">        
+        <li class="list-inline-item">Model selection</li>
+        <li class="list-inline-item">Metrics and scoring</li>
+        <li class="list-inline-item">Works with ndarray and nalgebra</li>        
+        <li class="list-inline-item">Distance metrics</li>     
+        <li class="list-inline-item">Toy datasets</li>
+        <li class="list-inline-item">Serializing and deserializing with Serde</li>                
+      </ul>      
+      <p><a class="btn btn-secondary" href="/user_guide/model_selection.html" role="button">Go to model evaluation »</a></p>
     </div>
   </div>
 

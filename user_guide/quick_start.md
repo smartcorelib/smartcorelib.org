@@ -5,7 +5,7 @@ title:  "Getting Started"
 
 # Getting Started
 
-Welcome to *SmartCore*, the most complete machine learning library for Rust! In *SmartCore* you will find implementation of the most common machine learning (ML) algorithms and tools:
+Welcome to *SmartCore*, the most advanced machine learning library in Rust! In *SmartCore* you will find implementation of the most common machine learning (ML) algorithms and tools:
 
 * __Regression__: Linear Regression (OLS), Decision Tree Regressor, Random Forest Regressor, K Nearest Neighbors
 * __Classification__: Logistic Regressor, Decision Tree Classifier, Random Forest Classifier, Supervised Nearest Neighbors (KNN)
@@ -20,7 +20,7 @@ Why another machine learning library for Rust, you might ask? At the time of wri
 Most of these libraries either do not support all of the algorithms that are implemented in *SmartCore* or aren't integrated with [nalgebra](https://nalgebra.org/) and [ndarray](https://github.com/rust-ndarray/ndarray).
 While *SmartCore* is integrated with both libraries you can also use standard Rust data types, like vectors and arrays with all of the algorithms implemented here if you prefer not to depend on any linear algebra library.
 
-We developed *SmartCore* to promote scientific computing in Rust. Our goal is to build an open library that has accurate, numerically stable and well documented implementations of the most well-known and widely used machine learning methods.
+We developed *SmartCore* to promote scientific computing in Rust. Our goal is to build an open library that has accurate, numerically stable, and well-documented implementations of the most well-known and widely used machine learning methods.
 
 ## Quick start
 
@@ -47,25 +47,26 @@ use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 use smartcore::neighbors::knn_classifier::*;
 use smartcore::math::distance::Distances;
 use smartcore::metrics::accuracy;
-
-// Load Iris dataset 
+// Load Iris dataset
 let iris_data = load_dataset();
 // Turn Iris dataset into NxM matrix
-let x = DenseMatrix::from_array(iris_data.num_samples, iris_data.num_features, &iris_data.data);
+let x = DenseMatrix::from_array(
+    iris_data.num_samples,
+    iris_data.num_features,
+    &iris_data.data,
+);
 // These are our target class labels
 let y = iris_data.target;
-
 // Fit KNN classifier to Iris dataset
 let knn = KNNClassifier::fit(
     &x,
-    &y,        
-    Distances::euclidian(), // We use euclidian distance here. 
-    Default::default()
-);
-let y_hat = knn.predict(&x); // Predict class labels
-
+    &y,
+    Distances::euclidian(), // We use euclidian distance here.
+    Default::default(),
+).unwrap();
+let y_hat = knn.predict(&x).unwrap(); // Predict class labels
 // Calculate training error
-println!("accuracy: {}", accuracy(&y, &y_hat)); // accuracy: 0.96
+println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.96
 ```
 Most of algorithms in *SmartCore* follow the same template when it comes to function names. There is usually a static function `fit` that fits model to your data and a function `predict` to predict labels or target values from new data. All mandatory parameters of the model are declared as parameters of function `fit`. All optional parameters are hidden behind `Default::default()`.
 
@@ -76,18 +77,19 @@ use smartcore::dataset::iris::load_dataset;
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 use smartcore::linear::logistic_regression::LogisticRegression;
 use smartcore::metrics::accuracy;
-
-// Load Iris dataset 
+// Load Iris dataset
 let iris_data = load_dataset();
 // Turn Iris dataset into NxM matrix
-let x = DenseMatrix::from_array(iris_data.num_samples, iris_data.num_features, &iris_data.data);
+let x = DenseMatrix::from_array(
+    iris_data.num_samples,
+    iris_data.num_features,
+    &iris_data.data,
+);
 // These are our target class labels
 let y = iris_data.target;
-
 // Fit Logistic Regression to Iris dataset
-let lr = LogisticRegression::fit(&x, &y);
-let y_hat = lr.predict(&x); // Predict class labels
-
+let lr = LogisticRegression::fit(&x, &y).unwrap();
+let y_hat = lr.predict(&x).unwrap(); // Predict class labels
 // Calculate training error
 println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
 ```
@@ -122,26 +124,24 @@ Here is how you would fit Logistic Regression to Iris dataset loaded as `ndarray
 
 ```rust
 use smartcore::dataset::iris::load_dataset;
-// ndarray wrapper
+// ndarray
 use ndarray::Array;
 // Imports for Logistic Regression
 use smartcore::linear::logistic_regression::LogisticRegression;
 // Model performance
 use smartcore::metrics::accuracy;
-
-// Load Iris dataset 
+// Load Iris dataset
 let iris_data = load_dataset();
 // Turn Iris dataset into NxM matrix
 let x = Array::from_shape_vec(
-    (iris_data.num_samples, iris_data.num_features), iris_data.data).unwrap();
-
+    (iris_data.num_samples, iris_data.num_features),
+    iris_data.data,
+).unwrap();
 // These are our target class labels
 let y = Array::from_shape_vec(iris_data.num_samples, iris_data.target).unwrap();
-
 // Fit Logistic Regression to Iris dataset
-let lr = LogisticRegression::fit(&x, &y);
-let y_hat = lr.predict(&x); // Predict class labels
-
+let lr = LogisticRegression::fit(&x, &y).unwrap();
+let y_hat = lr.predict(&x).unwrap(); // Predict class labels
 // Calculate training error
 println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
 ```
