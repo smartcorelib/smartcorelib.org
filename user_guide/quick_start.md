@@ -111,6 +111,17 @@ While functions from linear algebra module are public you should not use them di
 
 As you see from Figure 1 we have 3 layers with all the machine learning models defined at the second level. Model evaluation and selection deserves its own layer since functions defined here take models or predicted values as input.
 
+### Input and Output
+
+Most algorithms in *SmartCore* take 2D arrays (matrices) and vectors as input and produce matrices and vectors on output, as demonstrated in Figure 2.
+
+<figure class="image" align="center">
+  <img src="/assets/imgs/io_format.svg" alt="Input and output format.">
+  <figcaption>Figure 2. Input and output as matrices and vectors where <em>N</em> is number of samples and <em>M</em> is number of features in each sample.</figcaption>
+</figure>
+
+**X** is a *NxM* matrix with your training data. Training data comes as a set of samples of length *N*. Each sample has *M* features. For supervised learning, you also provide a vector of training labels, **y** that should have length M. Traits [`BaseMatrix`]({{site.api_base_url}}/linalg/trait.BaseMatrix.html) and [`BaseVector`]({{site.api_base_url}}/linalg/trait.BaseVector.html) are where all matrix and vector operations used by *SmartCore* are defined. 
+
 ## Linear algebra libraries
 
 All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra such as [ndarray](https://docs.rs/ndarray) and [nalgebra](https://docs.rs/nalgebra/). To enable both libraries add these compilation features to your `Cargo.toml` file:
