@@ -1,12 +1,12 @@
 url: "http://smartcorelib.org"
 tagline: "Rust Machine Learning"
-email: volodymyr.orlov@gmail.com
-author: Volodymyr Orlov
-baseurl: "" # the subpath of your site, e.g. /blog
-title: "SmartCore" # the name of your site, e.g. ACME Corp.
-years_updated: 2020-2021
+email: smartcorelib@gmail.com
+author: SmartCore Developers
+baseurl: ""
+title: "SmartCore"
+years_updated: 2019-2020
 smartcore_version: 0.1.0
-api_base_url: "http://localhost:8080/smartcore"
+api_base_url: "https://docs.rs/smartcore/0.1.0/smartcore"
 
 exclude:
   - scripts

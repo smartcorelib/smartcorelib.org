@@ -3,7 +3,7 @@ left:
   - name: Quick Start
     link: /user_guide/quick_start.html
   - name: API
-    link: http://localhost:8080/smartcore
+    link: https://docs.rs/smartcore/
   - name: Examples
     link: https://github.com/smartcorelib/smartcore-examples
 right:  

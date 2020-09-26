@@ -7,4 +7,4 @@ title:  "Getting Started"
 
 Links to the documentation for other releases of SmartCore:
 
-#### [SmartCore 0.1.0 (latest)]({{ site.baseurl }}/0.1.0/)
+#### [SmartCore 0.1.0 (latest)]({{ site.baseurl }})
