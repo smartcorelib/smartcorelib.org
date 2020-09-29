@@ -161,7 +161,7 @@ There are many other distance measures that can be used with KNN in *SmartCore*
 Linear regression is one of the most well known and well understood algorithms in statistics and machine learning. 
 
 <figure class="image" align="center">
-  <img src="/assets/imgs/simple_regression.svg" alt="Simple linear regression">
+  <img src="/assets/imgs/simple_regression.svg" alt="Simple linear regression" class="img-fluid">
   <figcaption>Figure 1. Simple linear regression.</figcaption>
 </figure>
 
@@ -250,7 +250,7 @@ The leaf nodes of the tree represent an outcome. To make a prediction we take th
 Given a dataset with just three explanatory variables and a qualitative dependent variable the tree might look like an example below.
 
 <figure class="image" align="center">
-  <img src="/assets/imgs/tree.svg" alt="Decision Tree example">
+  <img src="/assets/imgs/tree.svg" alt="Decision Tree example" class="img-fluid">
   <figcaption>Figure 2. An example of Decision Tree where target is a class.</figcaption>
 </figure>
 

@@ -105,7 +105,7 @@ All routines from optimization module are not available directly but we plan to 
 While functions from linear algebra module are public you should not use them directly because this module is still unstable and we plan to add and remove functions in the future. We opened these functions only to let anyone add implementations of other types of matrices that are currently not supported by *SmartCore*. Please see [Developer's Guide](/user_guide/developer.html) if you want to add new implementation for your favourite matrix type.
 
 <figure class="image" align="center">
-  <img src="/assets/imgs/architecture.svg" alt="SmartCore's architecture">
+  <img src="/assets/imgs/architecture.svg" alt="SmartCore's architecture" class="img-fluid">
   <figcaption>Figure 1. SmartCore's architecture represented as layers.</figcaption>
 </figure>
 
@@ -116,7 +116,7 @@ As you see from Figure 1 we have 3 layers with all the machine learning models d
 Most algorithms in *SmartCore* take 2D arrays (matrices) and vectors as input and produce matrices and vectors on output, as demonstrated in Figure 2.
 
 <figure class="image" align="center">
-  <img src="/assets/imgs/io_format.svg" alt="Input and output format.">
+  <img src="/assets/imgs/io_format.svg" alt="Input and output format." class="img-fluid">
   <figcaption>Figure 2. Input and output as matrices and vectors where <em>N</em> is number of samples and <em>M</em> is number of features in each sample.</figcaption>
 </figure>
 
