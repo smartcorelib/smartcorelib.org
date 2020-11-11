@@ -32,9 +32,13 @@ The best way to request a new feature is by [opening an issue](https://github.co
 
 Writing new code or [fixing existing issues](https://github.com/smartcorelib/smartcore/issues) is a great way to contribute. In *SmartCore* all new code is peer-reviewed by core contributors. Before writing new code, please submit an issue describing your problem or feature and give us some time to look at your proposal and suggest changes (if any). 
 
-New code should be submitted as a [pull request](https://github.com/smartcorelib/smartcore/pulls) in GutHub. We do not have any preferences as to [Forking](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) vs [Branching](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) when it comes to submitting your pull request. Please request to merge your change into the *development* branch.
+New code should be submitted as a [pull request](https://github.com/smartcorelib/smartcore/pulls) in GitHub. We do not have any preferences as to [Forking](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) vs [Branching](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) when it comes to submitting your pull request. Please request to merge your change into the *development* branch.
 
-New features should be covered by unit tests and documentation.
+In order to get a PR approved and merged, the CI tests should be passing. New features should be covered by unit tests and documentation. Please make sure that your changes pass the CI tests by running:
+
+1. `cargo test` to run thes tests.
+2. `cargo fmt` to format the code according to the style guidelines.
+3. `cargo clippy --all-features -- -Drust-2018-idioms -Dwarnings` for code linting.
 
 ## Changes to documentation
 
