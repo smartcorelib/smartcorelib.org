@@ -8,6 +8,8 @@ years_updated: 2019-2020
 smartcore_version: 0.1.0
 api_base_url: "https://docs.rs/smartcore/0.1.0/smartcore"
 
+analytics-google: 'G-D1L0JVQB04'
+
 exclude:
   - scripts
   - smartcorelib.code-workspace
