@@ -17,3 +17,14 @@ exclude:
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-avatar
+
+contributors:
+  - volodymyrorlov
+  - morenol
+  - mec-is
+  - rabbitrabid
+  - volodymyrorlov
+  - morenol
+  - mec-is
+  - rabbitrabid
