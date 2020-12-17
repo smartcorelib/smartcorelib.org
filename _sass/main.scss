@@ -73,3 +73,19 @@ pre.highlight {
     display: block;
   }
 }
+
+.authors-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.authors-container > div {
+  width: 100px;  
+}
+
+img.avatar {
+  @extend .rounded; 
+  @extend .border;
+  @extend .border-light; 
+}
