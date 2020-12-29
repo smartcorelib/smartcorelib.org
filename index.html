@@ -12,56 +12,28 @@ title: SmartCore
     <p><a class="btn btn-primary btn-lg" href="{{ site.baseurl }}/user_guide/quick_start.html" role="button">Get Started with SmartCore »</a></p>
   </div>
 </div>
-<div class="container">
-  <!-- Example row of columns -->
+<div class="container">  
   <div class="row">
-    <div class="col-md-4">      
-      <h2 class="text-dark">Supervised Learning</h2>
-      <ul class="list-inline">
-        <li class="list-inline-item">Linear and Logistic Regression</li>
-        <li class="list-inline-item">Decision Tree Regression</li>
-        <li class="list-inline-item">Random Forest Regression</li>
-        <li class="list-inline-item">Decision Tree Classifier</li>
-        <li class="list-inline-item">Random Forest Classifier</li>
-        <li class="list-inline-item">Supervised Nearest Neighbors</li>
-      </ul>            
-    </div>
-    <div class="col-md-4">      
-      <h2 class="text-dark">Unsupervised Learning</h2>
-      <ul class="list-inline">
-        <li class="list-inline-item">K-Means Clustering</li>
-        <li class="list-inline-item">Principal component analysis (PCA)</li>
-        <li class="list-inline-item">LU Decomposition</li>
-        <li class="list-inline-item">QR Decomposition</li>
-        <li class="list-inline-item">Singular value decomposition (SVD)</li>
-        <li class="list-inline-item">EVD Decomposition</li>        
-      </ul>            
-    </div>
-    <div class="col-md-4">
-      <h2 class="text-dark">Model Evaluation</h2>
-      <ul class="list-inline">        
-        <li class="list-inline-item">Model selection</li>
-        <li class="list-inline-item">Metrics and scoring</li>                
-        <li class="list-inline-item">Distance metrics</li>     
-        <li class="list-inline-item">Toy datasets</li>
-        <li class="list-inline-item">Works with ndarray and nalgebra</li>
-        <li class="list-inline-item">Serializing and deserializing with Serde</li>                
-      </ul>            
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-4">
+    <div class="col-lg-4">            
+      <h2 class="text-dark text-center">Supervised Learning</h2>
+      <img class="card-img-top" alt="Supervised Learning" src="{{site.baseurl}}/assets/imgs/rbf_svm.svg">                        
+      <p class="text-justify">Classification and regression algorithms including Linear Models, SVM, Random Forests, Naive Bayes.</p>          
       <p><a class="btn btn-secondary" href="{{ site.baseurl }}/user_guide/supervised.html" role="button">Go to supervised learning »</a></p>
     </div>
-    <div class="col-md-4">
-      <p><a class="btn btn-secondary" href="{{ site.baseurl }}/user_guide/unsupervised.html" role="button">Go to unsupervised learning »</a></p>
+    <div class="col-lg-4"> 
+      <h2 class="text-dark text-center">Unsupervised Learning</h2>
+      <img class="card-img-top" alt="Supervised Learning" src="{{site.baseurl}}/assets/imgs/digits_pca.svg">        
+      <p class="text-justify">Clustering and dimensionality reduction algorithms including K-Means, PCA, SVD and DBSCAN.</p>          
+      <p><a class="btn btn-secondary" href="{{ site.baseurl }}/user_guide/unsupervised.html" role="button">Go to unsupervised learning »</a></p>       
     </div>
-    <div class="col-md-4">
-      <p><a class="btn btn-secondary" href="{{ site.baseurl }}/user_guide/model_selection.html" role="button">Go to model evaluation »</a></p>
-    </div>
+    <div class="col-lg-4">      
+      <h2 class="text-dark text-center">Model Evaluation</h2>
+      <img class="card-img-top" alt="Supervised Learning" src="{{site.baseurl}}/assets/imgs/cross_val_predict.svg">              
+      <p class="text-justify">Tools for model selection and evaluation including k-fold CV and metrics for assessing prediction error.</p>          
+      <p><a class="btn btn-secondary" href="{{ site.baseurl }}/user_guide/model_selection.html" role="button">Go to model evaluation »</a></p>  
+    </div>  
   </div>
 
   {% include footer.html %}
 
-</div>
 </main>

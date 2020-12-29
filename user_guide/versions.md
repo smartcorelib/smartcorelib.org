@@ -7,4 +7,5 @@ title:  "Getting Started"
 
 Links to the documentation for other releases of SmartCore:
 
+#### [Smartcore 0.2.0](/0.2.0/)
 #### [Smartcore 0.1.0](/0.1.0/)
