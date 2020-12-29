@@ -89,7 +89,7 @@ let x_transformed = pca.transform(&x).unwrap();
 Once you've reduced the set of input features to first two principal components you can visualize your data using scatter plot, similar to <nobr>Figure 1</nobr>. 
 
 <figure class="image" align="center">
-  <img src="/assets/imgs/digits_pca.svg" alt="Simple linear regression" class="img-fluid">
+  <img src="{{site.baseurl}}/assets/imgs/digits_pca.svg" alt="Simple linear regression" class="img-fluid">
   <figcaption>Figure 1. First two principal components of the Digits dataset.</figcaption>
 </figure>
 

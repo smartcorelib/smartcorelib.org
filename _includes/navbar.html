@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
   <div class="container">
-  <a class="navbar-brand text-primary font-weight-bold mt-1" href="/">
+  <a class="navbar-brand text-primary font-weight-bold mt-1" href="{{ site.baseurl }}/">
     <img src="/assets/logo/smartcore.png" width="50" height="50" class="d-inline-block align-middle" alt="">
     SmartCore
   </a>
@@ -10,8 +10,12 @@
   <div class="collapse navbar-collapse" id="navbarNav">          
       <ul class="navbar-nav mr-auto">        
         {% for item in site.data.navigation.left %}
-          <li class="nav-item {% if page.url == item.link %}active{% endif %}">
-            <a class="nav-link font-weight-bold align-middle" href="{{ item.link }}">{{ item.name }}</a>
+          <li class="nav-item {% if page.url == item.link %}active{% endif %}">            
+            {% if item.link contains '://' %}          
+              <a class="nav-link font-weight-bold align-middle" href="{{ item.link }}">{{ item.name }}</a>
+            {% else %}
+              <a class="nav-link font-weight-bold align-middle" href="{{ site.baseurl }}{{ item.link }}">{{ item.name }}</a>
+            {% endif %}  
           </li> 
         {% endfor %}
         <li class="nav-item dropdown">
@@ -20,7 +24,11 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             {% for item in site.data.navigation.dropdown %}
-              <a class="dropdown-item" href="{{ item.link }}">{{ item.name }}</a>
+              {% if item.link contains '://' %}
+                <a class="dropdown-item" href="{{ item.link }}">{{ item.name }}</a>
+              {% else %}
+                <a class="dropdown-item" href="{{ site.baseurl }}{{ item.link }}">{{ item.name }}</a>
+              {% endif %}
             {% endfor %}
           </div>
         </li>           
@@ -28,7 +36,11 @@
       <ul class="navbar-nav ml-auto">                     
         {% for item in site.data.navigation.right %}
           <li class="nav-item {% if page.url == item.link %}active{% endif %}">
-            <a class="nav-link font-weight-bold align-middle" href="{{ item.link }}">{{ item.name }}</a>
+            {% if item.link contains '://' %}
+              <a class="nav-link font-weight-bold align-middle" href="{{ item.link }}">{{ item.name }}</a>
+            {% else %}
+              <a class="nav-link font-weight-bold align-middle" href="{{ site.baseurl }}{{ item.link }}">{{ item.name }}</a>
+            {% endif %}
           </li> 
         {% endfor %}
         <li class="nav-item">

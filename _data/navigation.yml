@@ -1,4 +1,3 @@
-#_data/navbar.yml
 left:
   - name: Quick Start
     link: /user_guide/quick_start.html

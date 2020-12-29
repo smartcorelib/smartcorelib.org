@@ -2,7 +2,7 @@ url: "http://smartcorelib.org"
 tagline: "Rust Machine Learning"
 email: smartcorelib@gmail.com
 author: SmartCore Developers
-baseurl: ""
+baseurl: "/0.1.0"
 title: "SmartCore"
 years_updated: 2019-2020
 smartcore_version: 0.1.0
