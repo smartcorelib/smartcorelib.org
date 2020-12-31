@@ -6,7 +6,8 @@ baseurl: "/0.2.0"
 title: "SmartCore"
 years_updated: 2020-2021
 smartcore_version: 0.2.0
-api_base_url: "https://docs.rs/smartcore/0.2.0/smartcore"
+# api_base_url: "https://docs.rs/smartcore/0.2.0/smartcore"
+api_base_url: "http://localhost:8080/smartcore"
 
 analytics-google: 'G-D1L0JVQB04'
 
