@@ -129,22 +129,23 @@ Algorithms in *SmartCore* take two dimensional arrays (matrices) and vectors as 
 
 ## Linear algebra libraries
 
-All functions in *SmartCore* work well and thoroughly tested on simple Rust's vectors but we do recommend to use more advanced and faster crates for linear algebra, such as [ndarray](https://docs.rs/ndarray) and [nalgebra](https://docs.rs/nalgebra/). To enable both libraries add these compilation features to your `Cargo.toml` file:
+All functions in *SmartCore* work well with ordinary Rust's vectors but we recommend using more advanced and faster crates for linear algebra, such as [ndarray](https://docs.rs/ndarray) and [nalgebra](https://docs.rs/nalgebra/). 
+
+### ndarray
+
+To enable `ndarray` add `ndarray-bindings` compilation feature to your `Cargo.toml` file:
 
 ```yaml
 [dependencies]
-smartcore = { version = "0.2.0", features=["nalgebra-bindings", "ndarray-bindings"]}
+smartcore = { version = "0.2.0", features=["ndarray-bindings"]}
 ```
 
-Here is how you would fit Logistic Regression to Iris dataset loaded as `ndarray` matrix:
+To fit Logistic Regression to Iris dataset using `ndarray`:
 
 ```rust
-use smartcore::dataset::iris::load_dataset;
-// ndarray
 use ndarray::Array;
-// Imports for Logistic Regression
+use smartcore::dataset::iris::load_dataset;
 use smartcore::linear::logistic_regression::LogisticRegression;
-// Model performance
 use smartcore::metrics::accuracy;
 // Load Iris dataset
 let iris_data = load_dataset();
@@ -162,12 +163,48 @@ let y_hat = lr.predict(&x).unwrap(); // Predict class labels
 println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
 ```
 
-As you might have noticed already the only difference between this example and the previous are lines where `x` and `y` variables are defined. 
+The only difference between this example and previous examples are lines where `x` and `y` variables are defined. 
+
+### nalgebra
+
+To enable nalgebra use `nalgebra-bindings` compilation feature:
+
+```yaml
+[dependencies]
+smartcore = { version = "0.2.0", features=["nalgebra-bindings"]}
+```
+
+This is how you fit Logistic Regression to Iris dataset with `nalgebra`:
+
+```rust
+use nalgebra::{DMatrix, RowDVector};
+use smartcore::dataset::iris::load_dataset;
+use smartcore::linear::logistic_regression::LogisticRegression;
+use smartcore::metrics::accuracy;
+// Load Iris dataset
+let iris_data = load_dataset();
+// Turn Iris dataset into NxM matrix
+let x = DMatrix::from_row_slice(
+    iris_data.num_samples,
+    iris_data.num_features,
+    &iris_data.data,
+);
+
+// These are our target class labels
+let y = RowDVector::from_iterator(iris_data.num_samples, iris_data.target.into_iter());
+
+// Fit Logistic Regression to Iris dataset
+let lr = LogisticRegression::fit(&x, &y, Default::default()).unwrap();
+let y_hat = lr.predict(&x).unwrap(); // Predict class labels
+
+// Calculate training error
+println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.98
+```
 
 ## What can I do next?
 
 If you are done reading through this page we would recommend to go to a specific section that interests you most. User's manual is organized into these broad categories:
-* [Supervised Learning](/user_guide/supervised.html), in this section you will find tree-based, linear and KNN models.
-* [Unsupervised Learning](/user_guide/unsupervised.html), unsupervised methods like clustering and matrix decomposition methods.
-* [Model Selection](/user_guide/model_selection.html), varios metrics for model evaluation.
-* [Developer's Guide](/user_guide/developer.html), would you like to contribute? Here you will find useful guidelines and rubrics to consider.
+* [Supervised Learning]({{ site.baseurl }}/user_guide/supervised.html), in this section you will find tree-based, linear and KNN models.
+* [Unsupervised Learning]({{ site.baseurl }}/user_guide/unsupervised.html), unsupervised methods like clustering and matrix decomposition methods.
+* [Model Selection]({{ site.baseurl }}/user_guide/model_selection.html), varios metrics for model evaluation.
+* [Developer's Guide]({{ site.baseurl }}/user_guide/developer.html), would you like to contribute? Here you will find useful guidelines and rubrics to consider.

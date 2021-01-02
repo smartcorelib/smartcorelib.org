@@ -20,7 +20,7 @@ Supervised learning is by far the most common machine learning method that is us
 * *Regression*: a regression problem is when the output variable is quantitative, such as "height" or "dollars".
 
 All algorithms in *SmartCore* support both, qualitative and quantitative response variables and follow the same naming convention for function names. 
-To fit an algorithm to your data use `fit` method that usually comes with at least 2 mandatory parameters: `x` for your predictors and `y` for target values. All optional parameters are hidden behind `Default::default()`.
+To fit an algorithm to your data use `fit` method that takes 2 mandatory parameters: `x` for your predictors and `y` for target values. All optional parameters are hidden behind `Default::default()`.
 To make a prediction use `predict` method that takes new observations as `x` and predicts estimated class labels or target values. 
 
 ## K Nearest Neighbors 
@@ -51,8 +51,7 @@ use smartcore::dataset::*;
 // DenseMatrix wrapper around Vec
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // Imports for KNN classifier
-use smartcore::math::distance::Distances;
-use smartcore::neighbors::knn_classifier::*;
+use smartcore::neighbors::knn_classifier::KNNClassifier;
 // Model performance
 use smartcore::metrics::roc_auc_score;
 use smartcore::model_selection::train_test_split;
@@ -67,19 +66,18 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // KNN classifier
 let y_hat_knn = KNNClassifier::fit(
     &x_train,
-    &y_train,
-    Distances::euclidian(),
+    &y_train,        
     Default::default(),
 ).and_then(|knn| knn.predict(&x_test)).unwrap();    
 // Calculate test error
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_knn));
 ```
 
-Default value of \\(K\\) is 3. If you want to change value of this and other parameters replace `Default::default()` with instance of [`KNNClassifierParameters`]({{site.api_base_url}}/neighbors/knn_classifier/struct.KNNClassifierParameters.html).
+Default value of \\(K\\) is 3. If you want to change value of this and other parameters replace `Default::default()` with an instance of [`KNNClassifierParameters`]({{site.api_base_url}}/neighbors/knn_classifier/struct.KNNClassifierParameters.html).
 
 ### Nearest Neighbors Regression
 
@@ -91,7 +89,7 @@ use smartcore::dataset::*;
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // KNN
 use smartcore::math::distance::Distances;
-use smartcore::neighbors::knn_regressor::KNNRegressor;
+use smartcore::neighbors::knn_regressor::{KNNRegressor, KNNRegressorParameters};
 // Model performance
 use smartcore::metrics::mean_squared_error;
 use smartcore::model_selection::train_test_split;
@@ -106,13 +104,12 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // KNN regressor
 let y_hat_knn = KNNRegressor::fit(
     &x_train,
-    &y_train,
-    Distances::euclidian(),
-    Default::default(),
+    &y_train,    
+    KNNRegressorParameters::default().with_distance(Distances::euclidian()),
 ).and_then(|knn| knn.predict(&x_test)).unwrap();
 // Calculate test error
 println!("MSE: {}", mean_squared_error(&y_test, &y_hat_knn));
@@ -181,7 +178,7 @@ use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // Linear Regression
 use smartcore::linear::linear_regression::LinearRegression;
 // Model performance
-use smartcore::metrics::{mean_squared_error, roc_auc_score};
+use smartcore::metrics::mean_squared_error;
 use smartcore::model_selection::train_test_split;
 // Load dataset
 let cancer_data = boston::load_dataset();
@@ -194,7 +191,7 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // Linear Regression
 let y_hat_lr = LinearRegression::fit(&x_train, &y_train, Default::default())
     .and_then(|lr| lr.predict(&x_test)).unwrap();
@@ -203,6 +200,139 @@ println!("MSE: {}", mean_squared_error(&y_test, &y_hat_lr));
 ```
 
 By default, *SmartCore* uses [SVD Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to find estimates of \\(\beta_i\\) that minimizes the sum of the squared residuals. While SVD Decomposition provides the most stable solution, you might decide to go with [QR Decomposition](https://en.wikipedia.org/wiki/QR_decomposition) since this approach is more computationally efficient than SVD Decomposition. For comparison, runtime complexity of SVD Decomposition is \\(O(mn^2 + n^3)\\) vs \\(O(mn^2 + n^3/3)\\) for QR decomposition, where \\(n\\) and \\(m\\) are dimentions of input matrix \\(X\\). Use `solver` attribute of the [`LinearRegressionParameters`]({{site.api_base_url}}/linear/linear_regression/struct.LinearRegressionParameters.html) to choose between decomposition methods.
+
+### Shrinkage Methods
+
+One way to avoid overfitting when you fit a linear model to your dataset is to use regularization. In simple terms, regularization shrinks parameters of the model towards zero. This shrinkage has the effect of reducing variance. Depending on what type of shrinkage is performed, some of the coefficients may be estimated to be exactly zero. Hence, shrinkage methods can also perform variable selection.
+
+#### Ridge Regression
+
+Ridge Regression is a regularized version of linear regression that adds L2 regularization term to the cost function:
+
+\\[\lambda \sum_{i=i}^n \beta_i^2\\] 
+
+where \\(\lambda \geq 0\\) is a tuning hyperparameter. If \\(\lambda\\) is close to 0, then it has no effects because Ridge Regression is similar to plain linear regression. As \\(\lambda\\) gets larger the shrinking effect on the weights gets stronger and the weights approach zero.
+
+To fit Ridge Regression use structs from the [`ridge_regression`]({{site.api_base_url}}/linear/ridge_regression/index.html) module:
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+use smartcore::linear::ridge_regression::{RidgeRegression, RidgeRegressionParameters};
+// Model performance
+use smartcore::metrics::mean_squared_error;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let boston_data = boston::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    boston_data.num_samples,
+    boston_data.num_features,
+    &boston_data.data,
+);
+// These are our target values
+let y = boston_data.target;
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
+// Ridge Regression
+let y_hat_rr = RidgeRegression::fit(
+    &x_train,
+    &y_train,
+    RidgeRegressionParameters::default().with_alpha(0.5),
+)
+.and_then(|rr| rr.predict(&x_test))
+.unwrap();
+// Calculate test error
+println!(
+    "MSE Ridge Regression: {}",
+    mean_squared_error(&y_test, &y_hat_rr)
+);
+```
+
+#### LASSO
+
+LASSO stands for Least Absolute Shrinkage and Selection Operator. It is analogous to Ridge Regression but uses L1 regularization term instead of L2 regularization term:
+
+\\[\lambda \sum_{i=i}^n \mid \beta_i \mid \\] 
+
+As with ridge regression, the lasso shrinks the coefficient estimates towards zero. However, in the case of the lasso, the L1 penalty has the effect of forcing some of the coefficient estimates to be exactly equal to zero when the tuning parameter \\(\lambda\\) is sufficiently large. Hence, the lasso performs variable selection and models generated from the lasso are generally much easier to interpret than those produced by ridge regression.
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+use smartcore::linear::lasso::{Lasso, LassoParameters};
+// Model performance
+use smartcore::metrics::mean_squared_error;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let boston_data = boston::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    boston_data.num_samples,
+    boston_data.num_features,
+    &boston_data.data,
+);
+// These are our target values
+let y = boston_data.target;
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
+// LASSO
+let y_hat_lasso = Lasso::fit(
+    &x_train,
+    &y_train,
+    LassoParameters::default().with_alpha(0.5),
+)
+.and_then(|lr| lr.predict(&x_test))
+.unwrap();
+// Calculate test error
+println!("MSE LASSO: {}", mean_squared_error(&y_test, &y_hat_lasso));
+```
+
+#### Elastic Net
+
+Elastic net linear regression uses the penalties from both the lasso and ridge techniques to regularize regression models.
+
+\\[\lambda_1 \sum_{i=i}^n \beta_i^2 + \lambda_2 \sum_{i=i}^n \mid \beta_i \mid\\]
+
+where \\(\lambda_1 = \\alpha l_{1r}\\), \\(\lambda_2 = \\alpha (1 -  l_{1r})\\) and \\(l_{1r}\\) is the l1 ratio, elastic net mixing parameter.
+
+elastic net combines both the L1 and L2 penalties during training, which can result in better performance than a model with either one or the other penalty on some problems.
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+use smartcore::linear::elastic_net::{ElasticNet, ElasticNetParameters};
+// Model performance
+use smartcore::metrics::mean_squared_error;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let boston_data = boston::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    boston_data.num_samples,
+    boston_data.num_features,
+    &boston_data.data,
+);
+// These are our target values
+let y = boston_data.target;
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
+// Elastic Net
+let y_hat_en = ElasticNet::fit(
+    &x_train,
+    &y_train,
+    ElasticNetParameters::default()
+        .with_alpha(0.5)
+        .with_l1_ratio(0.5),
+)
+.and_then(|lr| lr.predict(&x_test))
+.unwrap();
+// Calculate test error
+println!(
+    "MSE Elastic Net: {}",
+    mean_squared_error(&y_test, &y_hat_en)
+);
+```
 
 ### Logistic Regression
 
@@ -217,7 +347,7 @@ use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // Logistic Regression
 use smartcore::linear::logistic_regression::LogisticRegression;
 // Model performance
-use smartcore::metrics::{mean_squared_error, roc_auc_score};
+use smartcore::metrics::roc_auc_score;
 use smartcore::model_selection::train_test_split;
 // Load dataset
 let cancer_data = breast_cancer::load_dataset();
@@ -230,9 +360,9 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // Logistic Regression
-let y_hat_lr = LogisticRegression::fit(&x_train, &y_train)
+let y_hat_lr = LogisticRegression::fit(&x_train, &y_train, Default::default())
     .and_then(|lr| lr.predict(&x_test)).unwrap();
 // Calculate test error
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_lr));
@@ -240,33 +370,76 @@ println!("AUC: {}", roc_auc_score(&y_test, &y_hat_lr));
 
 *SmartCore* uses [Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS) routine to find optimal combination of \\(\beta_i\\) parameters. 
 
-## Decision Trees
+## Support Vector Machines
 
-Classification and Regression Trees (CART) and its modern variant Random Forest are among the most powerful algorithms available in machine learning. 
+Support Vector Machines (SVM) is perhaps one of the most popular machine learning algorithms. SVMs have been shown to perform well in a variety of settings, and is often considered one of the best "out of the box" classifiers. The support vector machines is a generalization of a simple and intuitive classifier called the maximal margin classifier.
 
-CART models relationship between predictor and explanatory variables as a binary tree. Each node of the tree represents a decision that is made based on an outcome of a single attribute.
-The leaf nodes of the tree represent an outcome. To make a prediction we take the mean of the training observations belonging to the leaf node for regression and the mode of observations for classification.
+The maximal margin classifier is a hypothetical classifier that best explains how SVM works in practice. This classifier is based on the idea of a hyperplane, a flat affine subspace of dimension \\(p-1\\) that divides p-dimensional space into two halves. A hyperplane is defined by the equation
 
-Given a dataset with just three explanatory variables and a qualitative dependent variable the tree might look like an example below.
+\\[\beta_0 + \beta_1X_1 + \beta_2X_2 + ... + \beta_pX_p = 0\\]
+
+To classify a new point using this line we plug in input values into this equation, and check on which side of the hyperplane a point lies by calculating the sign of the left hand side of it. 
+When the equation returns a value greater than 0 the point belongs to the first class, when the equation returns a value less than 0 and the point belongs to the second class.
+
+The distance between the hyperplane and the closest data points is referred to as the margin. The best or optimal hyperplane that can separate the two classes is the hyperplane that has the largest margin.
+This is called the maximal margin hyperplane.
+
+In practice, real data is messy and cannot be separated perfectly with a hyperplane. The generalization of the maximal margin classifier to the non-separable case is known as the support vector classifier.
+
+The support vector classifier (SVC) is an extension of the maximal margin classifier that results from enlarging the feature space in a specific way, using kernels. SVC allow some observations to be on the incorrect side of the margin, or even the incorrect side of the hyperplane rather than seeking the largest possible margin so that every observation is on the correct side of the hyperplane. 
 
 <figure class="image" align="center">
-  <img src="{{site.baseurl}}/assets/imgs/tree.svg" alt="Decision Tree example" class="img-fluid">
-  <figcaption>Figure 2. An example of Decision Tree where target is a class.</figcaption>
+  <img src="{{site.baseurl}}/assets/imgs/linear_svm.svg" alt="Simple linear regression" class="img-fluid">
+  <figcaption>Figure 2. Linear decision boundary of the Support Vector Classifier.</figcaption>
 </figure>
 
-CART model is simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, like Logistic and Linear Regression, especially when the response can be well approximated by a linear model. Tree-based method is also non-robust which means that a small change in the data can cause a large change in the final estimated tree. That's why it is a common practice to combine prediction from multiple trees in ensemble to estimate predicted values. 
+As maximal margin classifier, the SVC classifies a test observation depending on which side of a hyperplane it lies. The hyperplane is chosen to correctly separate most of the training observations into the two classes, but may misclassify a few observations. It is the solution to the optimization problem:
 
-In *SmartCore* both, decision and regression trees can be found in the [`tree`]({{site.api_base_url}}/tree/index.html) module. Use [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to fit decision tree and [`DecisionTreeRegressor`]({{site.api_base_url}}/tree/decision_tree_regressor/index.html) for regression. 
+\\[\underset{\beta_1, \beta_2, ..., \beta_p, \epsilon_1, ..., \epsilon_n, M}{maximize} \space \space M \\]
 
-To fit [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to [Breast Cancer]({{site.api_base_url}}/dataset/breast_cancer/index.html) dataset:
+subject to:
+\\[\sum_{j=1}^p\beta_j^2  = 1\\]
+\\[y_i(\beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + ... + \beta_px_{ip}) \geq M(1 - \epsilon_i) \\]
+\\[\epsilon_i \geq 0, \sum_{i=1}^n \epsilon_i \leq C\\]
+
+where C is a nonnegative tuning parameter, M is the width of the margin and \\(\epsilon_1, ..., \epsilon_n\\) are slack variables that allow individual observations to be on the wrong side of the margin or the hyperplane.
+
+C controls the bias-variance trade-off of the support vector classifier. When the tuning parameter C is large, then the margin is wide, many observations violate the margin, and so there are many support vectors. If C is small, then there will be fewer support vectors and hence the resulting classifier will have low bias but high variance.
+
+The solution to the support vector classifier optimization problem involves only the inner products of the observations, rather than the observations themselves. When we replace the inner product with a generalization that defines the similarity between new data and the support vectors the resulting classifier is known as a support vector machine. The similarity between a data point and the support vectors is called the kernel function.
+
+<figure class="image" align="center">
+  <img src="{{site.baseurl}}/assets/imgs/rbf_svm.svg" alt="Simple linear regression" class="img-fluid">
+  <figcaption>Figure 3. Support Vector Classifier with RBF kernel.</figcaption>
+</figure>
+
+*SmartCore* supports multiple kernel functions but you can always define a new kernel function by implementing the [`Kernel`]({{site.api_base_url}}/svm/trait.Kernel.html) trait. Not all functions can be a kernel.
+Building a new kernel requires a good mathematical understanding of the [Mercer theorem](https://en.wikipedia.org/wiki/Mercer%27s_theorem)
+that gives necessary and sufficient condition for a function to be a kernel function.
+
+Pre-defined kernel functions:
+
+{:.table .table-striped .table-bordered}
+| Kernel | Description |
+|-|-|
+| Linear | \\( K(x, x') = \langle x, x' \rangle\\) |
+| Polynomial | \\( K(x, x') = (\gamma\langle x, x' \rangle + r)^d\\), where \\(d\\) is polynomial degree, \\(\gamma\\) is a kernel coefficient and \\(r\\) is an independent term in the kernel function. |
+| RBF (Gaussian) | \\( K(x, x') = e^{-\gamma \lVert x - x' \rVert ^2} \\), where \\(\gamma\\) is kernel coefficient |
+| Sigmoid (hyperbolic tangent) | \\( K(x, x') = \tanh ( \gamma \langle x, x' \rangle + r ) \\), where \\(\gamma\\) is kernel coefficient and \\(r\\) is an independent term in the kernel function. |
+
+### Support Vector Classifier
+
+To fit a support vector classifier to your dataset use [`SVC`]({{site.api_base_url}}/svm/svc/index.html). 
+*SmartCore* uses an [approximate SVM solver](https://leon.bottou.org/projects/lasvm) to solve SMV optimization problem. 
+The solver reaches accuracies similar to that of a real SVM after performing two passes through the training examples. 
+You can choose the number of passes through the data that the algorithm takes by changing the `epoch` parameter of the classifier.
 
 ```rust
 use smartcore::dataset::*;
 // DenseMatrix wrapper around Vec
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
-// Tree
-use smartcore::tree::decision_tree_classifier::DecisionTreeClassifier;
-use smartcore::tree::decision_tree_regressor::DecisionTreeRegressor;
+// SVM
+use smartcore::svm::svc::{SVCParameters, SVC};
 // Model performance
 use smartcore::metrics::roc_auc_score;
 use smartcore::model_selection::train_test_split;
@@ -281,7 +454,161 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
+// SVC
+let y_hat_svm = SVC::fit(&x_train, &y_train, SVCParameters::default().with_c(10.0))
+    .and_then(|svm| svm.predict(&x_test))
+    .unwrap();
+// Calculate test error    
+println!("AUC SVM: {}", roc_auc_score(&y_test, &y_hat_svm));
+```
+
+### Support Vector Regressor
+
+To fit support vector regressor to your dataset use [`epsilon-support SVR`]({{site.api_base_url}}/svm/svr/index.html).
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// SVM
+use smartcore::svm::svr::{SVRParameters, SVR};
+use smartcore::svm::Kernels;
+// Model performance
+use smartcore::model_selection::train_test_split;
+use smartcore::metrics::mean_squared_error;
+// Load dataset
+let diabetes_data = diabetes::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    diabetes_data.num_samples,
+    diabetes_data.num_features,
+    &diabetes_data.data,
+);
+// These are our target values
+let y = diabetes_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
+// SVM
+let y_hat_svm = SVR::fit(&x_train, &y_train, 
+    SVRParameters::default().with_kernel(Kernels::rbf(0.5)).
+        with_c(2000.0).with_eps(10.0))
+    .and_then(|svm| svm.predict(&x_test))
+    .unwrap();
+// Calculate test error
+println!(
+    "MSE: {}",
+    mean_squared_error(&y_test, &y_hat_svm)
+);
+```
+
+## Naive Bayes
+
+Naive Bayes (NB) is a probabilistic machine learning algorithm based on the Bayes Theorem that assumes conditional independence between features given the value of the class variable.
+
+Bayes Theorem states following relashionship between class label and data:
+
+\\[ P(y \mid X) = \frac{P(y)P(X \mid y)}{P(X)} \\]
+
+where
+* \\(X = (x_1,...x_n)\\) represents the predictors.
+* \\(P(y \mid X)\\) is the probability of class _y_ given the data X
+* \\(P(X \mid y)\\) is the probability of data X given the class _y_.
+* \\(P(y)\\) is the probability of class y. This is called the prior probability of y.
+* \\(P(y \mid X)\\) is the probability of the data (regardless of the class value).
+
+We are interested in calculating the posterior probability of \\(P(y \mid X)\\) from the prior probability \\(P(y)\\), conditional probability \\(P(X \mid y)\\) and \\(P(X)\\). 
+The naive conditional independence assumption let us rewrite this equation as
+
+\\[ P(y \mid x_1,...x_n) = \frac{P(y)\prod_{i=1}^nP(x_i \mid y)}{P(x_1,...x_n)} \\]
+
+The denominator can be removed since \\(P(x_1,...x_n)\\) is constant for all the entries in the dataset.
+
+\\[ P(y \mid x_1,...x_n) \propto P(y)\prod_{i=1}^nP(x_i \mid y) \\]
+
+To find class y from predictors X we use this equation
+
+\\[ y = \underset{y}{argmax} P(y)\prod_{i=1}^nP(x_i \mid y) \\]
+
+Specific variants of the Naive Bayes classifier have different assumptions regarding the distribution of \\(P(x_i \mid y)\\). 
+The table below displays variants of Naive Bayes classifiers implemented in *SmartCore*:
+
+{:.table .table-striped .table-bordered}
+| Name | The assumptions on distribution of features |
+|-|-|
+| [Bernoulli NB]({{site.api_base_url}}/naive_bayes/bernoulli/index.html) | features are independent binary variables |
+| [Multinomial NB]({{site.api_base_url}}/naive_bayes/multinomial/index.html) | features are the frequencies with which certain events have been generated by a multinomial distribution |
+| [Categorical NB]({{site.api_base_url}}/naive_bayes/categorical/index.html) | each feature has its own categorical distribution |
+| [Gaussian NB]({{site.api_base_url}}/naive_bayes/gaussian/index.html) | continuous data distributed according to a Gaussian distribution |
+
+For example, this is how you can fit Gaussian NB to the Iris dataset:
+
+```rust
+use smartcore::dataset::iris::load_dataset;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Imports Gaussian Naive Bayes classifier
+use smartcore::naive_bayes::gaussian::GaussianNB;
+// Model performance
+use smartcore::metrics::accuracy;
+// Load Iris dataset
+let iris_data = load_dataset();
+// Turn Iris dataset into NxM matrix
+let x = DenseMatrix::from_array(
+    iris_data.num_samples,
+    iris_data.num_features,
+    &iris_data.data,
+);
+// These are our target class labels
+let y = iris_data.target;
+// Fit Logistic Regression to Iris dataset
+let gnb = GaussianNB::fit(&x, &y, Default::default()).unwrap();
+let y_hat = gnb.predict(&x).unwrap(); // Predict class labels
+// Calculate training error
+println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.96
+```
+
+## Decision Trees
+
+Classification and Regression Trees (CART) and its modern variant Random Forest are among the most powerful algorithms available in machine learning. 
+
+CART models relationship between predictor and explanatory variables as a binary tree. Each node of the tree represents a decision that is made based on an outcome of a single attribute.
+The leaf nodes of the tree represent an outcome. To make a prediction we take the mean of the training observations belonging to the leaf node for regression and the mode of observations for classification.
+
+Given a dataset with just three explanatory variables and a qualitative dependent variable the tree might look like an example below.
+
+<figure class="image" align="center">
+  <img src="{{site.baseurl}}/assets/imgs/tree.svg" alt="Decision Tree example" class="img-fluid">
+  <figcaption>Figure 4. An example of Decision Tree where target is a class.</figcaption>
+</figure>
+
+CART model is simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, like Logistic and Linear Regression, especially when the response can be well approximated by a linear model. Tree-based method is also non-robust which means that a small change in the data can cause a large change in the final estimated tree. That's why it is a common practice to combine prediction from multiple trees in ensemble to estimate predicted values. 
+
+In *SmartCore* both, decision and regression trees can be found in the [`tree`]({{site.api_base_url}}/tree/index.html) module. Use [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to fit decision tree and [`DecisionTreeRegressor`]({{site.api_base_url}}/tree/decision_tree_regressor/index.html) for regression. 
+
+To fit [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to [Breast Cancer]({{site.api_base_url}}/dataset/breast_cancer/index.html) dataset:
+
+```rust
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Tree
+use smartcore::tree::decision_tree_classifier::DecisionTreeClassifier;
+// Model performance
+use smartcore::metrics::roc_auc_score;
+use smartcore::model_selection::train_test_split;
+// Load dataset
+let cancer_data = breast_cancer::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    cancer_data.num_samples,
+    cancer_data.num_features,
+    &cancer_data.data,
+);
+// These are our target class labels
+let y = cancer_data.target;
+// Split dataset into training/test (80%/20%)
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // Decision Tree
 let y_hat_tree = DecisionTreeClassifier::fit(&x_train, &y_train, Default::default())
     .and_then(|tree| tree.predict(&x_test)).unwrap();
@@ -321,7 +648,7 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = cancer_data.target;
 // Split dataset into training/test (80%/20%)
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // Random Forest
 let y_hat_rf = RandomForestRegressor::fit(&x_train, &y_train, Default::default())
     .and_then(|rf| rf.predict(&x_test)).unwrap();
@@ -338,9 +665,11 @@ You should get lower mean squared error here when compared to other methods from
 * ["The Elements of Statistical Learning: Data Mining, Inference, and Prediction" Trevor et al., 2nd edition](https://web.stanford.edu/~hastie/ElemStatLearn/)
 * ["An Introduction to Statistical Learning", James G., Witten D., Hastie T., Tibshirani R.](http://faculty.marshall.usc.edu/gareth-james/ISL/)
 * ["The Art of Computer Programming" Knuth, D, Vol. 3, 2nd ed, Sorting and Searching, 1998](https://www-cs-faculty.stanford.edu/~knuth/taocp.html)
+* ["Machine Learning: A Probabilistic Perspective", Kevin P. Murphy, 2012, Chapter 3 ](https://mitpress.mit.edu/books/machine-learning-1)
 * ["Cover Trees for Nearest Neighbor" Beygelzimer et al., Proceedings of the 23rd international conference on Machine learning, ICML'06 (2006)](https://hunch.net/~jl/projects/cover_tree/cover_tree.html)
 * ["Faster cover trees." Izbicki et al., Proceedings of the 32nd International Conference on Machine Learning, ICML'15 (2015)](http://www.cs.ucr.edu/~cshelton/papers/index.cgi%3FIzbShe15)
 * ["Numerical Recipes: The Art of Scientific Computing",  Press W.H., Teukolsky S.A., Vetterling W.T, Flannery B.P, 3rd ed.](http://numerical.recipes/)
 * ["Pattern Recognition and Machine Learning", C.M. Bishop, Linear Models for Classification](https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf)
 * ["On the Limited Memory Method for Large Scale Optimization", Nocedal et al., Mathematical Programming, 1989](http://users.iems.northwestern.edu/~nocedal/PDFfiles/limited.pdf)
 * ["Classification and regression trees", Breiman, L, Friedman, J H, Olshen, R A, and Stone, C J, 1984](https://www.sciencebase.gov/catalog/item/545d07dfe4b0ba8303f728c1)
+* ["Support Vector Machines", Kowalczyk A., 2017](https://www.svm-tutorial.com/2017/10/support-vector-machines-succinctly-released/)
