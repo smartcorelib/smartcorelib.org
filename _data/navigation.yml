@@ -4,7 +4,7 @@ left:
   - name: API
     link: https://docs.rs/smartcore/0.2.0/smartcore/
   - name: Examples
-    link: https://github.com/smartcorelib/smartcore-examples
+    link: https://github.com/smartcorelib/smartcore-examples/tree/release-0.2.0
 right:  
   - name: About Us
     link: /about.html

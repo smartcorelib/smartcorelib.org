@@ -9,7 +9,7 @@ title:  "Model Selection and Evaluation"
 
 Model selection is the process of selecting one final machine learning model from among a collection of candidate models for you problem at hand. The process of assessing a model’s performance is known as model evaluation.
 
-[K-fold Cross-Validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) is a commonly used technique for model selection and evaluation. Another alternative is to split your data into three separate sets: _training_, _validation_, _test_. You use the _training_ set to train your model and _validation_ set for model selection and hyperparameter tuning. The _test_ set can be used to get an unbiased estimate of model performance.
+[K-fold Cross-Validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) (k-fold CV) is a commonly used technique for model selection and evaluation. Another alternative is to split your data into three separate sets: _training_, _validation_, _test_. You use the _training_ set to train your model and _validation_ set for model selection and hyperparameter tuning. The _test_ set can be used to get an unbiased estimate of model performance.
 
 You can use [`train_test_split`]({{site.api_base_url}}/model_selection/fn.train_test_split.html) function to split your data into two separate sets. In the example that follows we split [Boston Housing]({{site.api_base_url}}/dataset/boston/index.html) dataset into two new sets: 80% of data is reserved for training and 20% of data is left for model evaluation.
 
@@ -30,8 +30,59 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let y = boston_data.target;
 // Split data 80/20
-let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2);
+let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 ```
+
+While a simple test/train split method is good method that works well with a very large dataset, the test score dependents on how the data is split into train and test sets. To get a better indication of how well your model performs on unseen data use k-fold CV. 
+
+To evaluate performance of your model with k-fold CV use [`cross_validate`]({{site.api_base_url}}/model_selection/fn.cross_validate.html) function.
+This function splits datasets up into k groups. One of the groups is used as the test set and the rest are used as the training set. The model is trained on the training set and scored on the test set. Then the process is repeated until each unique group as been used as the test set. 
+
+For example, when you split your dataset into 3 folds, as in <nobr>Figure 1</nobr>, `cross_validate` will fit and evaluate your model 3 times. First, the function will use folds 2 and 3 to train your model and fold 1 to evaluate its performance. On the second run, the function will take folds 1 and 3 for trainig and fold 2 for evaluation. 
+
+<figure class="image" align="center">
+  <img src="{{site.baseurl}}/assets/imgs/kfold.svg" alt="k-fold CV" class="img-fluid">
+  <figcaption>Figure 1. Illustration of the k-fold cross validation.</figcaption>
+</figure>
+
+Let's evaluate performance of Logistic Regression on Breast Cancer dataset with 3-fold CV:
+
+```rust
+use smartcore::dataset::breast_cancer;
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// Logistic regression
+use smartcore::linear::logistic_regression::LogisticRegression;
+// Model performance
+use smartcore::metrics::accuracy;
+// K-fold CV
+use smartcore::model_selection::{cross_validate, KFold};
+// Load dataset
+let breast_cancer_data = breast_cancer::load_dataset();
+let x = DenseMatrix::from_array(
+    breast_cancer_data.num_samples,
+    breast_cancer_data.num_features,
+    &breast_cancer_data.data,
+);
+// These are our target values
+let y = breast_cancer_data.target;
+// cross-validated estimator
+let results = cross_validate(
+    LogisticRegression::fit,
+    &x,
+    &y,
+    Default::default(),
+    KFold::default().with_n_splits(3),
+    accuracy,
+)
+.unwrap();
+println!(
+    "Test score: {}, training score: {}",
+    results.mean_test_score(),
+    results.mean_train_score()
+);
+```
+
+Note that training score is higher than test score. The function [`cross_val_predict`]({{site.api_base_url}}/model_selection/fn.cross_val_predict.html) has a similar interface to `cross_validate`, but returns, for each element in the input, the prediction that was obtained for that element when it was in the test set.
 
 ## Toy Datasets
 
@@ -107,8 +158,7 @@ let y = iris_data.target;
 // Fit KNN classifier to Iris dataset
 let knn = KNNClassifier::fit(
     &x,
-    &y,
-    Distances::euclidian(), // We use euclidian distance here.
+    &y,    
     Default::default(),
 ).unwrap();
 // File name for the model

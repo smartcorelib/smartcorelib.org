@@ -17,7 +17,7 @@ A cluster is often an area of density in the feature space where observations ar
 
 Clustering can be a helpful tool in your toolbox to learn more about the problem domain or for knowledge discovery.
 
-There are many types of clustering algorithms but at this moment *SmartCore* supports only [K-means](https://en.wikipedia.org/wiki/K-means_clustering).
+There are many types of clustering algorithms but at this moment *SmartCore* supports only [K-means](https://en.wikipedia.org/wiki/K-means_clustering) and [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN).
 
 To fit K-means to your data use `fit` method from the [`KMeans`]({{site.api_base_url}}/cluster/kmeans/index.html) struct. Method `fit` takes a _NxM_ matrix with your data where _N_ is the number of samples and _M_ is the number of features. Another parameter of this function, _K_, is the number of clusters. If you don't know how many clusters are there in your data use [Elbow Method](https://en.wikipedia.org/wiki/Elbow_method_(clustering)) to estimate it.
 
@@ -27,7 +27,9 @@ use smartcore::dataset::*;
 // DenseMatrix wrapper around Vec
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // K-Means
-use smartcore::cluster::kmeans::KMeans;
+use smartcore::cluster::kmeans::{KMeans, KMeansParameters};
+// Performance metrics
+use smartcore::metrics::{homogeneity_score, completeness_score, v_measure_score};
 // Load dataset
 let digits_data = digits::load_dataset();
 // Transform dataset into a NxM matrix
@@ -39,7 +41,7 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let true_labels = digits_data.target;
 // Fit & predict
-let labels = KMeans::fit(&x, 10, Default::default())
+let labels = KMeans::fit(&x, KMeansParameters::default().with_k(10))
     .and_then(|kmeans| kmeans.predict(&x))
     .unwrap();
 // Measure performance
@@ -49,6 +51,55 @@ println!("V Measure: {}", v_measure_score(&true_labels, &labels));
 ```
 
 By default, `KMeans` terminates when it reaches 100 iterations without converging to a stable set of clusters. Pass an instance of [`KMeansParameters`]({{site.api_base_url}}/cluster/kmeans/struct.KMeansParameters.html) instead of `Default::default()` into method `fit` if you want to change value of this parameter.
+
+DBSCAN implementation can be found in the [dbscan]({{site.api_base_url}}/cluster/dbscan/index.html) module. To fit DBSCAN to your dataset:
+
+```rust
+// Load datasets API
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// DBSCAN
+use smartcore::cluster::dbscan::{DBSCANParameters, DBSCAN};
+// Performance metrics
+use smartcore::metrics::{completeness_score, homogeneity_score, v_measure_score};
+// Load dataset
+let circles = generator::make_circles(1000, 0.5, 0.05);
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(circles.num_samples, circles.num_features, &circles.data);
+// These are our target class labels
+let true_labels = circles.target;
+// Fit & predict
+let labels = DBSCAN::fit(
+    &x,
+    DBSCANParameters::default()
+        .with_eps(0.2)
+        .with_min_samples(5),
+)
+.and_then(|c| c.predict(&x))
+.unwrap();
+
+// Measure performance
+println!("Homogeneity: {}", homogeneity_score(&true_labels, &labels));
+println!(
+    "Completeness: {}",
+    completeness_score(&true_labels, &labels)
+);
+println!("V Measure: {}", v_measure_score(&true_labels, &labels));
+utils::scatterplot(
+    &x,
+    Some(&labels.into_iter().map(|f| f as usize).collect()),
+    "test",
+)
+.unwrap();
+```
+
+DBSCAN is good for data which contains clusters of similar density. If you visualize results using scatter plot you will see that each concentrical circle is assigned to a separate cluster.
+
+<figure class="image" align="center">
+  <img src="{{site.baseurl}}/assets/imgs/circles.svg" alt="DBSCAN" class="img-fluid img-thumbnail">
+  <figcaption>Figure 1. DBSCAN results when applied to a toy dataset.</figcaption>
+</figure>
 
 ## Dimensionality Reduction
 
@@ -67,9 +118,7 @@ use smartcore::dataset::*;
 // DenseMatrix wrapper around Vec
 use smartcore::linalg::naive::dense_matrix::DenseMatrix;
 // PCA
-use smartcore::decomposition::pca::PCA;
-// plotters
-use plotters::prelude::*;
+use smartcore::decomposition::pca::{PCA, PCAParameters};
 // Load dataset
 let digits_data = digits::load_dataset();
 // Transform dataset into a NxM matrix
@@ -81,17 +130,42 @@ let x = DenseMatrix::from_array(
 // These are our target class labels
 let labels = digits_data.target;
 // Fit PCA to digits dataset
-let pca = PCA::fit(&x, 2, Default::default()).unwrap();
+let pca = PCA::fit(&x, PCAParameters::default().with_n_components(2)).unwrap();
 // Reduce dimensionality of X to 2 principal components
 let x_transformed = pca.transform(&x).unwrap();
 ```
 
-Once you've reduced the set of input features to first two principal components you can visualize your data using scatter plot, similar to <nobr>Figure 1</nobr>. 
+Once you've reduced the set of input features to first two principal components you can visualize your data using scatter plot, similar to <nobr>Figure 2</nobr>. 
 
 <figure class="image" align="center">
-  <img src="{{site.baseurl}}/assets/imgs/digits_pca.svg" alt="Simple linear regression" class="img-fluid">
-  <figcaption>Figure 1. First two principal components of the Digits dataset.</figcaption>
+  <img src="{{site.baseurl}}/assets/imgs/digits_pca.svg" alt="PCA" class="img-fluid img-thumbnail">
+  <figcaption>Figure 2. First two principal components of the Digits dataset.</figcaption>
 </figure>
+
+Singular Value Decomposition (SVD) is another popular technique for dimensionality reduction. Use [`svd`]({{site.api_base_url}}/decomposition/svd/index.html) module to reduce dimentions for the Digits dataset:
+
+```rust
+// Load datasets API
+use smartcore::dataset::*;
+// DenseMatrix wrapper around Vec
+use smartcore::linalg::naive::dense_matrix::DenseMatrix;
+// SVD
+use smartcore::decomposition::svd::{SVDParameters, SVD};
+// Load dataset
+let digits_data = digits::load_dataset();
+// Transform dataset into a NxM matrix
+let x = DenseMatrix::from_array(
+    digits_data.num_samples,
+    digits_data.num_features,
+    &digits_data.data,
+);
+// These are our target class labels
+let labels = digits_data.target;
+// Fit SVD to digits dataset
+let svd = SVD::fit(&x, SVDParameters::default().with_n_components(2)).unwrap();
+// Reduce dimensionality of X
+let x_transformed = svd.transform(&x).unwrap();
+```
 
 ## Matrix Factorization
 
@@ -140,7 +214,7 @@ let x_hat = u.matmul(s).matmul(&v.transpose());
 for (x_i, x_hat_i) in x.iter().zip(x_hat.iter()){
     assert!((x_i - x_hat_i).abs() < 1e-3)
 } 
-```
+``` 
 
 ## References
 * ["An Introduction to Statistical Learning", James G., Witten D., Hastie T., Tibshirani R.](http://faculty.marshall.usc.edu/gareth-james/ISL/)
