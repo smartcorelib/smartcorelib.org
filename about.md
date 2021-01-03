@@ -9,13 +9,13 @@ SmartCore is developed and maintained by Smartcore developers. Our goal is to bu
 
 ## Contributors
 
-<div class="authors-container mt-3">
+<div class="row authors-container">    
     {% for contributor in site.data.contributors %}
         <div class="col-lg-2 text-center text-capitalize">
             <a href="https://github.com/{{contributor.id}}">{% avatar user=contributor.id size=60 %}</a>
             <p>{{contributor.name}}</p>
         </div>
-    {% endfor %}
+    {% endfor %}    
 </div>
 ## Release Notes
 
