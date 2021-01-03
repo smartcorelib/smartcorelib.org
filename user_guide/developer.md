@@ -34,9 +34,9 @@ Writing new code or [fixing existing issues](https://github.com/smartcorelib/sma
 
 New code should be submitted as a [pull request](https://github.com/smartcorelib/smartcore/pulls) in GitHub. We do not have any preferences as to [Forking](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) vs [Branching](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) when it comes to submitting your pull request. Please request to merge your change into the *development* branch.
 
-In order to get a PR approved and merged, the CI tests should be passing. New features should be covered by unit tests and documentation. Please make sure that your changes pass the CI tests by running:
+To make sure your PR is swiftly approved and merged, please make sure new features are covered by unit tests and properly documented. Also, run these tests locally:
 
-1. `cargo test` to run thes tests.
+1. `cargo test --features "ndarray-bindings, nalgebra-bindings"` for unit tests.
 2. `cargo fmt` to format the code according to the style guidelines.
 3. `cargo clippy --all-features -- -Drust-2018-idioms -Dwarnings` for code linting.
 

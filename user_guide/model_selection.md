@@ -33,10 +33,10 @@ let y = boston_data.target;
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 ```
 
-While a simple test/train split method is good method that works well with a very large dataset, the test score dependents on how the data is split into train and test sets. To get a better indication of how well your model performs on unseen data use k-fold CV. 
+While a simple test/train split method is good for a very large dataset, the test score dependents on how the data is split into train and test sets. To get a better indication of how well your model performs on new data use k-fold CV. 
 
 To evaluate performance of your model with k-fold CV use [`cross_validate`]({{site.api_base_url}}/model_selection/fn.cross_validate.html) function.
-This function splits datasets up into k groups. One of the groups is used as the test set and the rest are used as the training set. The model is trained on the training set and scored on the test set. Then the process is repeated until each unique group as been used as the test set. 
+This function splits datasets up into k groups. One of the groups is used as the test set and the rest are used as the training set. The model is trained on the training set and evaluated on the test set. Then the process is repeated until each unique group as been used as the test set. 
 
 For example, when you split your dataset into 3 folds, as in <nobr>Figure 1</nobr>, `cross_validate` will fit and evaluate your model 3 times. First, the function will use folds 2 and 3 to train your model and fold 1 to evaluate its performance. On the second run, the function will take folds 1 and 3 for trainig and fold 2 for evaluation. 
 

@@ -19,6 +19,21 @@ SmartCore is developed and maintained by Smartcore developers. Our goal is to bu
 </div>
 ## Release Notes
 
+### Version 0.2.0
+
+- DBSCAN
+- Epsilon-SVR, SVC
+- Ridge, Lasso, ElasticNet
+- Bernoulli, Gaussian, Categorical and Multinomial Naive Bayes
+- K-fold Cross Validation
+- Singular value decomposition
+- New api module
+- Integration with Clippy
+- smartcore::error:FailedError is now non-exhaustive 
+- ndarray upgraded to 0.14
+- Cholesky decomposition
+- API changed in: K-Means, PCA, Random Forest, Linear and Logistic Regression, KNN, Decision Tree
+
 ### Version 0.1.0
 
 This is our first realease, enjoy! In this version you'll find:
