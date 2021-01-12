@@ -1,6 +1,7 @@
 ---
 layout: manual
-title:  "Supervised Learning"
+title:  Supervised Learning
+description: Supervised learning with Smartcore, including, but not limited to KNN, Naive Bayes, Decision Trees, ensemble methods, Random Forest, linear models and SVM.
 ---
 
 # Supervised Learning

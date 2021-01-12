@@ -1,6 +1,7 @@
 ---
 layout: manual
-title:  "Getting Started"
+title:  Getting Started
+description: Quick introduction to Smartcore capabilities. Fit your first machine learning algorithm in Rust, learn Smartcore API and core concepts.
 ---
 
 # Getting Started

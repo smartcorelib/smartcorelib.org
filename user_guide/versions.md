@@ -1,6 +1,7 @@
 ---
 layout: manual
-title:  "Getting Started"
+title:  Getting Started
+description: Are you looking for documentation on previous versions of Smartcore? Here you will find a full list of all historical versions of this website.
 ---
 
 # Access documentation for other versions

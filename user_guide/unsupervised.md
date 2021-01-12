@@ -1,6 +1,7 @@
 ---
 layout: manual
 title:  "Unsupervised Learning"
+description: Unsupervised learning with Smartcore, including, but not limited to K-means, DBSCAN, SVD, PCA. Various matrix decomposition methods, like LU, EVD, QR
 ---
 
 # Unsupervised Learning

@@ -1,6 +1,7 @@
 ---
 layout: manual
 title:  "Model Selection and Evaluation"
+description: Tools for model selection and evaluation. K-fold cross validation, train/test split and evaluation metrics for classification, regression and clustering.
 ---
 
 # Model Selection and Evaluation

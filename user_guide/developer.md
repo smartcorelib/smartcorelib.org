@@ -1,6 +1,7 @@
 ---
 layout: manual
 title:  "Developer's Guide"
+description: Join Smartcore development team! This page will help you to get started if you are considering contributing to the project. 
 ---
 
 # Developer's Guide
