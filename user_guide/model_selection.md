@@ -122,7 +122,7 @@ let accuracy = smartcore::metrics::accuracy(&y_pred, &y_true);
 
 ## Model persistence
 
-All algorithms and data structures in *SmartCore* implement `Deserialize` and `Serialize` traits from the [Serde](https://serde.rs/) crate. This enables you to serialize and deserialize your model into [any format supported by Serde](https://serde.rs/#data-formats). 
+All algorithms and data structures in *SmartCore* implement `Deserialize` and `Serialize` traits from the [Serde](https://serde.rs/) crate. This enables you to serialize and deserialize your model into [any format supported by Serde](https://serde.rs/#data-formats). You need to enable the `serde` feature.
 
 For example, to save your model on disk as a [bincode-encoded](https://github.com/servo/bincode) file make sure to add these lines into your `Cargo.toml` file.
 
