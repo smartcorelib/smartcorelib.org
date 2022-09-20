@@ -639,15 +639,15 @@ use smartcore::ensemble::random_forest_regressor::RandomForestRegressor;
 use smartcore::metrics::mean_squared_error;
 use smartcore::model_selection::train_test_split;
 // Load dataset
-let cancer_data = boston::load_dataset();
+let boston_data = boston::load_dataset();
 // Transform dataset into a NxM matrix
 let x = DenseMatrix::from_array(
-    cancer_data.num_samples,
-    cancer_data.num_features,
-    &cancer_data.data,
+    boston_data.num_samples,
+    boston_data.num_features,
+    &boston_data.data,
 );
 // These are our target class labels
-let y = cancer_data.target;
+let y = boston_data.target;
 // Split dataset into training/test (80%/20%)
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 // Random Forest
