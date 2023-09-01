@@ -8,7 +8,7 @@ description: Tools for model selection and evaluation. K-fold cross validation, 
 
 *SmartCore* comes with a lot of easy-to-use algorithms and it is straightforward to fit many different machine learning models to a given dataset. Once you have many algorithms to choose from the question becomes how to choose the best machine learning model among a range of different models that you can use for your data. The problem of choosing the right model becomes even harder if you consider many different combinations of hyperparameters for each algorithm.
 
-Model selection is the process of selecting one final machine learning model from among a collection of candidate models for you problem at hand. The process of assessing a model’s performance is known as model evaluation.
+Model selection is the process of selecting one final machine learning model from among a collection of candidate models for the problem at hand. The process of assessing a model’s performance is known as model evaluation.
 
 [K-fold Cross-Validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) (k-fold CV) is a commonly used technique for model selection and evaluation. Another alternative is to split your data into three separate sets: _training_, _validation_, _test_. You use the _training_ set to train your model and _validation_ set for model selection and hyperparameter tuning. The _test_ set can be used to get an unbiased estimate of model performance.
 
@@ -34,12 +34,12 @@ let y = boston_data.target;
 let (x_train, x_test, y_train, y_test) = train_test_split(&x, &y, 0.2, true);
 ```
 
-While a simple test/train split method is good for a very large dataset, the test score dependents on how the data is split into train and test sets. To get a better indication of how well your model performs on new data use k-fold CV. 
+While a simple test/train split method is good for a very large dataset, the test score depends on how the data is split into train and test sets. To get a better indication of how well your model performs on new data use k-fold CV. 
 
 To evaluate performance of your model with k-fold CV use [`cross_validate`]({{site.api_base_url}}/model_selection/fn.cross_validate.html) function.
-This function splits datasets up into k groups. One of the groups is used as the test set and the rest are used as the training set. The model is trained on the training set and evaluated on the test set. Then the process is repeated until each unique group as been used as the test set. 
+This function splits datasets up into k groups. One of the groups is used as the test set and the rest are used as the training set. The model is trained on the training set and evaluated on the test set. Then the process is repeated until each unique group has been used as the test set. 
 
-For example, when you split your dataset into 3 folds, as in <nobr>Figure 1</nobr>, `cross_validate` will fit and evaluate your model 3 times. First, the function will use folds 2 and 3 to train your model and fold 1 to evaluate its performance. On the second run, the function will take folds 1 and 3 for trainig and fold 2 for evaluation. 
+For example, when you split your dataset into 3 folds, as in <nobr>Figure 1</nobr>, `cross_validate` will fit and evaluate your model 3 times. First, the function will use folds 2 and 3 to train your model and fold 1 to evaluate its performance. On the second run, the function will take folds 1 and 3 for training and fold 2 for evaluation. 
 
 <figure class="image" align="center">
   <img src="{{site.baseurl}}/assets/imgs/kfold.svg" alt="k-fold CV" class="img-fluid">
@@ -95,7 +95,7 @@ We also keep toy datasets behind the `datasets` feature flag. Feature `datasets`
 smartcore = { version = "0.1.0", default-features = false}
 ```
 
-When feature flag `datasets` is enabled you'l get these datasets:
+When feature flag `datasets` is enabled you'll get these datasets:
 
 {:.table .table-striped .table-bordered}
 | Dataset | Description | Samples | Attributes | Type |
