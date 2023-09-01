@@ -36,7 +36,7 @@ SmartCore is developed and maintained by Smartcore developers. Our goal is to bu
 
 ### Version 0.1.0
 
-This is our first realease, enjoy! In this version you'll find:
+This is our first release, enjoy! In this version you'll find:
 - KNN + distance metrics (Euclidian, Minkowski, Manhattan, Hamming, Mahalanobis)
 - Linear Regression (OLS)
 - Logistic Regression
