@@ -6,7 +6,7 @@ description: Unsupervised learning with Smartcore, including, but not limited to
 
 # Unsupervised Learning
 
-In unsupervised learning we do not have labeled dataset. In other words, for every observation \\(i = 1,...,n\\), we observe a vector of measurements \\(x_i\\) but no associated response \\(y_i\\). The goal for unsupervised learning is to model the underlying structure or distribution in the data in order to learn more about the problem at hand. 
+In unsupervised learning we do not have a labeled dataset. In other words, for every observation \\(i = 1,...,n\\), we observe a vector of measurements \\(x_i\\) but no associated response \\(y_i\\). The goal for unsupervised learning is to model the underlying structure or distribution in the data in order to learn more about the problem at hand. 
 
 In *SmartCore*, we use the same set of functions to fit unsupervised algorithms to your data as in supervised learning. The only difference is that the method `fit` does not need labels to learn from your data. Similar to supervised learning, optional parameters of method `fit` are hidden behind `Default::default()`. To make predictions use `predict` method that takes new data and predicts estimated class labels.
 
@@ -20,7 +20,7 @@ Clustering can be a helpful tool in your toolbox to learn more about the problem
 
 There are many types of clustering algorithms but at this moment *SmartCore* supports only [K-means](https://en.wikipedia.org/wiki/K-means_clustering) and [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN).
 
-To fit K-means to your data use `fit` method from the [`KMeans`]({{site.api_base_url}}/cluster/kmeans/index.html) struct. Method `fit` takes a _NxM_ matrix with your data where _N_ is the number of samples and _M_ is the number of features. Another parameter of this function, _K_, is the number of clusters. If you don't know how many clusters are there in your data use [Elbow Method](https://en.wikipedia.org/wiki/Elbow_method_(clustering)) to estimate it.
+To fit K-means to your data use `fit` method from the [`KMeans`]({{site.api_base_url}}/cluster/kmeans/index.html) struct. Method `fit` takes a _NxM_ matrix with your data where _N_ is the number of samples and _M_ is the number of features. Another parameter of this function, _K_, is the number of clusters. If you don't know how many clusters are in your data use [Elbow Method](https://en.wikipedia.org/wiki/Elbow_method_(clustering)) to estimate it.
 
 ```rust
 // Load datasets API
@@ -53,7 +53,7 @@ println!("V Measure: {}", v_measure_score(&true_labels, &labels));
 
 By default, `KMeans` terminates when it reaches 100 iterations without converging to a stable set of clusters. Pass an instance of [`KMeansParameters`]({{site.api_base_url}}/cluster/kmeans/struct.KMeansParameters.html) instead of `Default::default()` into method `fit` if you want to change value of this parameter.
 
-DBSCAN implementation can be found in the [dbscan]({{site.api_base_url}}/cluster/dbscan/index.html) module. To fit DBSCAN to your dataset:
+The DBSCAN implementation can be found in the [dbscan]({{site.api_base_url}}/cluster/dbscan/index.html) module. To fit DBSCAN to your dataset:
 
 ```rust
 // Load datasets API
@@ -95,7 +95,7 @@ utils::scatterplot(
 .unwrap();
 ```
 
-DBSCAN is good for data which contains clusters of similar density. If you visualize results using scatter plot you will see that each concentrical circle is assigned to a separate cluster.
+DBSCAN is good for data which contains clusters of similar density. If you visualize results using a scatter plot you will see that each concentric circle is assigned to a separate cluster.
 
 <figure class="image" align="center">
   <img src="{{site.baseurl}}/assets/imgs/circles.svg" alt="DBSCAN" class="img-fluid img-thumbnail">
@@ -104,7 +104,7 @@ DBSCAN is good for data which contains clusters of similar density. If you visua
 
 ## Dimensionality Reduction
 
-Large number of correlated variables in the feature space can dramatically impact the performance of machine learning algorithms (see [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality)). Therefore, it is often desirable to reduce the dimensionality of the feature space.
+A large number of correlated variables in the feature space can dramatically impact the performance of machine learning algorithms (see [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality)). Therefore, it is often desirable to reduce the dimensionality of the feature space.
 
 Principal component analysis (PCA) is a popular approach to dimensionality reduction from the field of linear algebra. PCA is often called "feature projection" and the algorithms used are referred to as "projection methods".
 
@@ -112,7 +112,7 @@ PCA is an unsupervised approach, since it involves only a set of \\(n\\) feature
 
 In PCA, the set of features \\(x_i\\) is re-expressed in terms of a set of an equal number of principal component variables. Whereas the features might be intercorrelated, the principal component variables are not. Each of the principal components found by PCA is a linear combination of the \\(n\\) features. The first principal component has the largest variance, the second component has the second largest variance, and so on.
 
-In *SmartCore*, PCA is declared in [`pca`]({{site.api_base_url}}/decomposition/pca/index.html) module. Here is how you can calculate first two principal components for the [Digits]({{site.api_base_url}}/dataset/digits/index.html) dataset:
+In *SmartCore*, PCA is declared in [`pca`]({{site.api_base_url}}/decomposition/pca/index.html) module. Here is how you can calculate the first two principal components for the [Digits]({{site.api_base_url}}/dataset/digits/index.html) dataset:
 
 ```rust
 use smartcore::dataset::*;
@@ -136,7 +136,7 @@ let pca = PCA::fit(&x, PCAParameters::default().with_n_components(2)).unwrap();
 let x_transformed = pca.transform(&x).unwrap();
 ```
 
-Once you've reduced the set of input features to first two principal components you can visualize your data using scatter plot, similar to <nobr>Figure 2</nobr>. 
+Once you've reduced the set of input features to the first two principal components you can visualize your data using a scatter plot, similar to <nobr>Figure 2</nobr>. 
 
 <figure class="image" align="center">
   <img src="{{site.baseurl}}/assets/imgs/digits_pca.svg" alt="PCA" class="img-fluid img-thumbnail">
@@ -170,7 +170,7 @@ let x_transformed = svd.transform(&x).unwrap();
 
 ## Matrix Factorization
 
-Many complex matrix operations cannot be solved efficiently or with stability using the limited precision of computers. One way to solve this problem is to use matrix decompositions methods (or matrix factorization methods) that reduce a matrix into its constituent parts.
+Many complex matrix operations cannot be solved efficiently or with stability using the limited precision of computers. One way to solve this problem is to use matrix decomposition methods (or matrix factorization methods) that reduce a matrix into its constituent parts.
 
 Matrix decomposition methods are at the foundation of basic operations such as solving systems of linear equations, calculating the inverse, and calculating the determinant of a matrix.
 
