@@ -19,7 +19,7 @@ All of these algorithms are implemented in Rust.
 
 Why another machine learning library for Rust, you might ask? While there are at least three [general-purpose ML libraries](http://www.arewelearningyet.com/) for Rust,
 most of these libraries either do not support all of the algorithms that are implemented in *SmartCore* or aren't integrated with [nalgebra](https://nalgebra.org/) and [ndarray](https://github.com/rust-ndarray/ndarray).
-All algorithms in *SmartCore* works well with both libraries. You can also use standard Rust vectors with all of the algorithms implemented here if you prefer to have minimum number of dependencies in your code.
+All algorithms in *SmartCore* work well with both libraries. You can also use standard Rust vectors with all of the algorithms implemented here if you prefer to have minimum number of dependencies in your code.
 
 We developed *SmartCore* to promote scientific computing in Rust. Our goal is to build an open-source library that has accurate, numerically stable, and well-documented implementations of the most well-known and widely used machine learning methods.
 
@@ -96,9 +96,9 @@ Our performance metric (accuracy) went up two percentage points! Nice work!
 
 ## High-level overview
 
-Majority of machine learning algorithms rely on linear algebra routines and optimization methods to fit a model to a dataset or to make a prediction from new data. There are many crates for linear algebra and optimization in Rust but SmartCore does not has a hard dependency on any of these crates. Instead, machine learning algorithms in *SmartCore* use an abstraction layer where operations on multidimensional arrays and maximization/minimization routines are defined. This approach allow us to quickly integrate with any new type of matrix or vector as long as it implements all abstract methods from this layer. 
+Majority of machine learning algorithms rely on linear algebra routines and optimization methods to fit a model to a dataset or to make a prediction from new data. There are many crates for linear algebra and optimization in Rust but SmartCore does not have a hard dependency on any of these crates. Instead, machine learning algorithms in *SmartCore* use an abstraction layer where operations on multidimensional arrays and maximization/minimization routines are defined. This approach allows us to quickly integrate with any new type of matrix or vector as long as it implements all abstract methods from this layer. 
 
-Functions from optimization module are not available directly but we plan to make optimization library public once it is mature enough. 
+Functions from the optimization module are not available directly but we plan to make the optimization library public once it is mature enough. 
 
 While functions from [linear algebra module]({{site.api_base_url}}/linalg/index.html) are public you should not use them directly because this module is still unstable. We keep this interface open to let anyone add implementations of other types of matrices that are currently not supported by *SmartCore*. Please see [Developer's Guide]({{ site.baseurl }}/user_guide/developer.html) if you want to add your favourite matrix type to *SmartCore*.
 
@@ -111,9 +111,9 @@ Figure 1 shows 3 layers with abstract linear algebra and optimization functions 
 
 ### API
 
-All algorithms in *SmartCore* implement the same inrefrace when it comes to fitting an algorithm to your dataset or making a prediction from new data. All core interfaces are defined in the [api module]({{site.api_base_url}}/api/index.html).
+All algorithms in *SmartCore* implement the same interface when it comes to fitting an algorithm to your dataset or making a prediction from new data. All core interfaces are defined in the [api module]({{site.api_base_url}}/api/index.html).
 
-There is a static function `fit` that fits an algorithm to your data. This function is defined in two places, [`SupervisedEstimator`]({{ site.api_base_url }}/api/trait.SupervisedEstimator.html) and [`UnsupervisedEstimator`]({{ site.api_base_url }}/api/trait.UnsupervisedEstimator.html), one is used for supervised learning and another for unsupervised learning. Both estimators takes you training data and hyperparameters for the algorithm and produce a fully trained instance of the estimator. The only difference between these two traits is that `SupervisedEstimator` requires training target values in addition to training predictors to fit an algorithm to your data.
+There is a static function `fit` that fits an algorithm to your data. This function is defined in two places, [`SupervisedEstimator`]({{ site.api_base_url }}/api/trait.SupervisedEstimator.html) and [`UnsupervisedEstimator`]({{ site.api_base_url }}/api/trait.UnsupervisedEstimator.html), one is used for supervised learning and another for unsupervised learning. Both estimators take your training data and hyperparameters for the algorithm and produce a fully trained instance of the estimator. The only difference between these two traits is that `SupervisedEstimator` requires training target values in addition to training predictors to fit an algorithm to your data.
 
 A function `predict` is defined in the [`Predictor`]({{ site.api_base_url }}/api/trait.Predictor.html) trait and is used to predict labels or target values from new data. All mandatory parameters of the model are declared as parameters of function `fit`. All optional parameters are hidden behind `Default::default()`.
 

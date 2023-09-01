@@ -6,12 +6,12 @@ description: Supervised learning with Smartcore, including, but not limited to K
 
 # Supervised Learning
 
-Most machine learning problems falls into one of two categories: _supervised_ and _unsupervised_.
+Most machine learning problems fall into one of two categories: _supervised_ and _unsupervised_.
 This page describes supervised learning algorithms implemented in *SmartCore*. 
 
 In supervised learning we build a model which can be written in the very general form as
 \\[Y = f(X) + \epsilon\\]
-\\(X = (X_1,X_2,...,X_p)\\) are observations that consist of \\(p\\) different predictors, \\(Y\\) is an associated target values and 
+\\(X = (X_1,X_2,...,X_p)\\) are observations that consist of \\(p\\) different predictors, \\(Y\\) is an associated target value and 
 \\(\epsilon\\) is a random error term, which is independent of \\(X\\) and has zero mean.
 We fit an unknown function \\(f\\) to our data to predict the response for future observations or better understand the relationship between the response and the predictors.
 
@@ -26,7 +26,7 @@ To make a prediction use `predict` method that takes new observations as `x` and
 
 ## K Nearest Neighbors 
 
-K-nearest neighbors (KNN) is one of the simplest and best-known non-parametric classification and regression method.
+K-nearest neighbors (KNN) is one of the simplest and best-known non-parametric classification and regression methods.
 KNN does not require training. The algorithm simply stores the entire dataset and then uses this dataset to make predictions.
 
 More formally,
@@ -34,11 +34,11 @@ given a positive integer \\(K\\) and a test observation \\(x_0\\), the KNN class
 
 \\[ Pr(Y=j \vert X=x_0) = \frac{1}{K} \sum_{i \in N_0} I(y_i=j) \\]
 
-KNN Regressor is closely related to the KNN classifier. It estimates target value using the average of all the reponses in \\(N_0\\), i.e.
+KNN Regressor is closely related to the KNN classifier. It estimates a target value using the average of all the reponses in \\(N_0\\), i.e.
 
 \\[ \hat{y} = \frac{1}{K} \sum_{i \in N_0} y_i \\]
 
-The choice of \\(K\\) is very important. \\(K\\) can be found by tuning algorithm on a holdout dataset. It is a good idea to try many different values for \\(K\\) (e.g. values from 1 to 21) and see which value gives the best test error rate.
+The choice of \\(K\\) is very important. \\(K\\) can be found by tuning the algorithm on a holdout dataset. It is a good idea to try many different values for \\(K\\) (e.g. values from 1 to 21) and see which value gives the best test error rate.
 
 To determine which of the \\(K\\) instances in the training dataset are most similar to a new input a [distance metric]({{site.api_base_url}}/math/distance/index.html) is used. 
 For real-valued input variables, the most popular distance metric is [Euclidean distance]({{site.api_base_url}}/math/distance/euclidian/index.html). You can choose the best distance metric based on the properties of your data. If you are unsure, you can experiment with different distance metrics and different values of \\(K\\) together and see which mix results in the most accurate models.
@@ -78,11 +78,11 @@ let y_hat_knn = KNNClassifier::fit(
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_knn));
 ```
 
-Default value of \\(K\\) is 3. If you want to change value of this and other parameters replace `Default::default()` with an instance of [`KNNClassifierParameters`]({{site.api_base_url}}/neighbors/knn_classifier/struct.KNNClassifierParameters.html).
+Default value of \\(K\\) is 3. If you want to change this value or other parameters replace `Default::default()` with an instance of [`KNNClassifierParameters`]({{site.api_base_url}}/neighbors/knn_classifier/struct.KNNClassifierParameters.html).
 
 ### Nearest Neighbors Regression
 
-KNN Regressor, implemented in [`KNNClassifier`]({{site.api_base_url}}/neighbors/knn_regressor/struct.KNNRegressor.html) is very similar to KNN Classifier, the only difference is that returned value is a real value instead of class label. To fit `KNNRegressor` to [Boston Housing]({{site.api_base_url}}/dataset/boston/index.html) dataset:
+KNN Regressor, implemented in [`KNNClassifier`]({{site.api_base_url}}/neighbors/knn_regressor/struct.KNNRegressor.html) is very similar to KNN Classifier, the only difference is that the returned value is a real value instead of class label. To fit `KNNRegressor` to [Boston Housing]({{site.api_base_url}}/dataset/boston/index.html) dataset:
 
 ```rust
 use smartcore::dataset::*;
@@ -120,19 +120,19 @@ As with KNN Classifier you can change value of k and other parameters by passing
 
 ### Nearest Neighbor Algorithms
 
-The computational complexity of KNN increases with the size of the training dataset. This is because every time prediction is made algorithm has to search through all stored samples to find K nearest neighbors. Efficient implementation of KNN requires special data structure, like [CoverTree](https://en.wikipedia.org/wiki/Cover_tree) to speed up look-up of nearest neighbors during prediction.
+The computational complexity of KNN increases with the size of the training dataset. This is because every time a prediction is made the algorithm has to search through all stored samples to find K nearest neighbors. Efficient implementations of KNN require a special data structure, like [CoverTree](https://en.wikipedia.org/wiki/Cover_tree) to speed up the look-up of nearest neighbors during prediction.
 
-Cover Tree is the default algorithm for KNN regressor and classifier. Change value of `algorithm` field of the `KNNRegressorParameters` or `KNNClassifierParameters` if you want to switch to brute force search method.
+Cover Tree is the default algorithm for KNN regressor and classifier. Change the value of `algorithm` field of the `KNNRegressorParameters` or `KNNClassifierParameters` if you want to switch to brute force search method.
 
 #### Brute Force
 
-The brute force nearest neighbor search is the simplest algorithm that calculates the distance from the query point to every other point in the dataset while maintaining a list of K nearest items in a [Binary Heap](https://en.wikipedia.org/wiki/Binary_heap#Search). This algorithms does not maintain any search data structure and results in \\(O(n)\\) search time, where \\(n\\) is number of samples. Brute force search algorithm is implemented in [LinearKNNSearch]({{site.api_base_url}}/algorithm/neighbour/linear_search/index.html).
+The brute force nearest neighbor search is the simplest algorithm that calculates the distance from the query point to every other point in the dataset while maintaining a list of K nearest items in a [Binary Heap](https://en.wikipedia.org/wiki/Binary_heap#Search). This algorithm does not maintain any search data structure and results in \\(O(n)\\) search time, where \\(n\\) is number of samples. Brute force search algorithm is implemented in [LinearKNNSearch]({{site.api_base_url}}/algorithm/neighbour/linear_search/index.html).
 
 #### Cover Tree
 
-Although Brute Force algorithms is very simple approach it outperforms a lot of space partitioning approaches like [k-d tree](https://en.wikipedia.org/wiki/K-d_tree) on higher dimensional spaces. However, the brute-force approach quickly becomes infeasible as the dataset grows in size. To address inefficiencies of Brute Force other data structures are used that reduce the required number of distance calculations by efficiently encoding aggregate distance information for the sample.
+Although the Brute Force algorithm is a very simple approach it outperforms a lot of space partitioning approaches like [k-d tree](https://en.wikipedia.org/wiki/K-d_tree) on higher dimensional spaces. However, the brute-force approach quickly becomes infeasible as the dataset grows in size. To address inefficiencies of Brute Force other data structures are used that reduce the required number of distance calculations by efficiently encoding aggregate distance information for the sample.
 
-A [Cover Tree]({{site.api_base_url}}/algorithm/neighbour/cover_tree/index.html) is a tree data structure used for the partitiong of metric spaces to speed up nearest neighbor operations. Cover trees are fast in practice and have great theoretical properties: 
+A [Cover Tree]({{site.api_base_url}}/algorithm/neighbour/cover_tree/index.html) is a tree data structure used for the partitioning of metric spaces to speed up nearest neighbor operations. Cover trees are fast in practice and have great theoretical properties: 
 
 * Construction: \\(O(c^6n\log n)\\)
 * Query:  \\(O(c^{12}\log n)\\),
@@ -142,7 +142,7 @@ where \\(n\\) is number of samples in a dataset and \\(c\\) denotes the expansio
 
 ### Distance Metrics
 
-The choice of distance metric for KNN algorithm largely depends on properties of your data. If you don't know which distance to use go with Euclidean distance function or choose metric that gives you the best performance on a hold out test set. 
+The choice of distance metric for the KNN algorithm largely depends on properties of your data. If you don't know which distance to use go with Euclidean distance function or choose a metric that gives you the best performance on a hold out test set. 
 There are many other distance measures that can be used with KNN in *SmartCore*
 
 {:.table .table-striped .table-bordered}
@@ -200,7 +200,7 @@ let y_hat_lr = LinearRegression::fit(&x_train, &y_train, Default::default())
 println!("MSE: {}", mean_squared_error(&y_test, &y_hat_lr));
 ```
 
-By default, *SmartCore* uses [SVD Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to find estimates of \\(\beta_i\\) that minimizes the sum of the squared residuals. While SVD Decomposition provides the most stable solution, you might decide to go with [QR Decomposition](https://en.wikipedia.org/wiki/QR_decomposition) since this approach is more computationally efficient than SVD Decomposition. For comparison, runtime complexity of SVD Decomposition is \\(O(mn^2 + n^3)\\) vs \\(O(mn^2 + n^3/3)\\) for QR decomposition, where \\(n\\) and \\(m\\) are dimentions of input matrix \\(X\\). Use `solver` attribute of the [`LinearRegressionParameters`]({{site.api_base_url}}/linear/linear_regression/struct.LinearRegressionParameters.html) to choose between decomposition methods.
+By default, *SmartCore* uses [SVD Decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) to find estimates of \\(\beta_i\\) that minimize the sum of the squared residuals. While the SVD provides the most stable solution, you might decide to go with [QR Decomposition](https://en.wikipedia.org/wiki/QR_decomposition) since this approach is more computationally efficient than the SVD. For comparison, runtime complexity of the SVD is \\(O(mn^2 + n^3)\\) vs \\(O(mn^2 + n^3/3)\\) for QR decomposition, where \\(n\\) and \\(m\\) are dimentions of input matrix \\(X\\). Use `solver` attribute of the [`LinearRegressionParameters`]({{site.api_base_url}}/linear/linear_regression/struct.LinearRegressionParameters.html) to choose between decomposition methods.
 
 ### Shrinkage Methods
 
@@ -208,11 +208,11 @@ One way to avoid overfitting when you fit a linear model to your dataset is to u
 
 #### Ridge Regression
 
-Ridge Regression is a regularized version of linear regression that adds L2 regularization term to the cost function:
+Ridge Regression is a regularized version of linear regression that adds an L2 regularization term to the cost function:
 
 \\[\lambda \sum_{i=i}^n \beta_i^2\\] 
 
-where \\(\lambda \geq 0\\) is a tuning hyperparameter. If \\(\lambda\\) is close to 0, then it has no effects because Ridge Regression is similar to plain linear regression. As \\(\lambda\\) gets larger the shrinking effect on the weights gets stronger and the weights approach zero.
+where \\(\lambda \geq 0\\) is a tuning hyperparameter. If \\(\lambda\\) is close to 0, then it has no effect because Ridge Regression is similar to plain linear regression. As \\(\lambda\\) gets larger the shrinking effect on the weights gets stronger and the weights approach zero.
 
 To fit Ridge Regression use structs from the [`ridge_regression`]({{site.api_base_url}}/linear/ridge_regression/index.html) module:
 
@@ -252,7 +252,7 @@ println!(
 
 #### LASSO
 
-LASSO stands for Least Absolute Shrinkage and Selection Operator. It is analogous to Ridge Regression but uses L1 regularization term instead of L2 regularization term:
+LASSO stands for Least Absolute Shrinkage and Selection Operator. It is analogous to Ridge Regression but uses an L1 regularization term instead of an L2 regularization term:
 
 \\[\lambda \sum_{i=i}^n \mid \beta_i \mid \\] 
 
@@ -297,7 +297,7 @@ Elastic net linear regression uses the penalties from both the lasso and ridge t
 
 where \\(\lambda_1 = \\alpha l_{1r}\\), \\(\lambda_2 = \\alpha (1 -  l_{1r})\\) and \\(l_{1r}\\) is the l1 ratio, elastic net mixing parameter.
 
-elastic net combines both the L1 and L2 penalties during training, which can result in better performance than a model with either one or the other penalty on some problems.
+Elastic net combines both the L1 and L2 penalties during training, which can result in better performance than a model with either one or the other penalty on some problems.
 
 ```rust
 use smartcore::dataset::*;
@@ -337,7 +337,7 @@ println!(
 
 ### Logistic Regression
 
-Logistic regression uses linear model to represent relashionship between dependent and explanatory variables. Unlike linear regression, output in logistic regression is modeled as a binary value (0 or 1) rather than a numeric value. to squish output between 0 and 1 [Sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used.
+Logistic regression uses a linear model to represent a relationship between dependent and explanatory variables. Unlike linear regression, output in logistic regression is modeled as a binary value (0 or 1) rather than a numeric value. to squish output between 0 and 1 [Sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) is used.
 
 In *SmartCore* Logistic Regression is represented by [`LogisticRegression`]({{site.api_base_url}}/linear/logistic_regression/index.html) struct that has methods `fit` and `predict`. 
 
@@ -369,11 +369,11 @@ let y_hat_lr = LogisticRegression::fit(&x_train, &y_train, Default::default())
 println!("AUC: {}", roc_auc_score(&y_test, &y_hat_lr));
 ```
 
-*SmartCore* uses [Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS) routine to find optimal combination of \\(\beta_i\\) parameters. 
+*SmartCore* uses [Limited-memory BFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS) routine to find an optimal combination of \\(\beta_i\\) parameters. 
 
 ## Support Vector Machines
 
-Support Vector Machines (SVM) is perhaps one of the most popular machine learning algorithms. SVMs have been shown to perform well in a variety of settings, and is often considered one of the best "out of the box" classifiers. The support vector machines is a generalization of a simple and intuitive classifier called the maximal margin classifier.
+Support Vector Machines (SVM) are perhaps one of the most popular machine learning algorithms. SVMs have been shown to perform well in a variety of settings, and are often considered one of the best "out of the box" classifiers. The support vector machines is a generalization of a simple and intuitive classifier called the maximal margin classifier.
 
 The maximal margin classifier is a hypothetical classifier that best explains how SVM works in practice. This classifier is based on the idea of a hyperplane, a flat affine subspace of dimension \\(p-1\\) that divides p-dimensional space into two halves. A hyperplane is defined by the equation
 
@@ -431,7 +431,7 @@ Pre-defined kernel functions:
 ### Support Vector Classifier
 
 To fit a support vector classifier to your dataset use [`SVC`]({{site.api_base_url}}/svm/svc/index.html). 
-*SmartCore* uses an [approximate SVM solver](https://leon.bottou.org/projects/lasvm) to solve SMV optimization problem. 
+*SmartCore* uses an [approximate SVM solver](https://leon.bottou.org/projects/lasvm) to solve the SVM optimization problem. 
 The solver reaches accuracies similar to that of a real SVM after performing two passes through the training examples. 
 You can choose the number of passes through the data that the algorithm takes by changing the `epoch` parameter of the classifier.
 
@@ -507,7 +507,7 @@ println!(
 
 Naive Bayes (NB) is a probabilistic machine learning algorithm based on the Bayes Theorem that assumes conditional independence between features given the value of the class variable.
 
-Bayes Theorem states following relashionship between class label and data:
+Bayes Theorem states the following relationship between class label and data:
 
 \\[ P(y \mid X) = \frac{P(y)P(X \mid y)}{P(X)} \\]
 
@@ -573,7 +573,7 @@ println!("accuracy: {}", accuracy(&y, &y_hat)); // Prints 0.96
 
 Classification and Regression Trees (CART) and its modern variant Random Forest are among the most powerful algorithms available in machine learning. 
 
-CART models relationship between predictor and explanatory variables as a binary tree. Each node of the tree represents a decision that is made based on an outcome of a single attribute.
+CART models relationships between predictor and explanatory variables as a binary tree. Each node of the tree represents a decision that is made based on an outcome of a single attribute.
 The leaf nodes of the tree represent an outcome. To make a prediction we take the mean of the training observations belonging to the leaf node for regression and the mode of observations for classification.
 
 Given a dataset with just three explanatory variables and a qualitative dependent variable the tree might look like an example below.
@@ -583,7 +583,7 @@ Given a dataset with just three explanatory variables and a qualitative dependen
   <figcaption>Figure 4. An example of Decision Tree where target is a class.</figcaption>
 </figure>
 
-CART model is simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, like Logistic and Linear Regression, especially when the response can be well approximated by a linear model. Tree-based method is also non-robust which means that a small change in the data can cause a large change in the final estimated tree. That's why it is a common practice to combine prediction from multiple trees in ensemble to estimate predicted values. 
+CART model is simple and useful for interpretation. However, they typically are not competitive with the best supervised learning approaches, like Logistic and Linear Regression, especially when the response can be well approximated by a linear model. Tree-based methods are also non-robust which means that a small change in the data can cause a large change in the final estimated tree. That's why it is a common practice to combine predictions from multiple trees in ensemble to estimate predicted values. 
 
 In *SmartCore* both, decision and regression trees can be found in the [`tree`]({{site.api_base_url}}/tree/index.html) module. Use [`DecisionTreeClassifier`]({{site.api_base_url}}/tree/decision_tree_classifier/index.html) to fit decision tree and [`DecisionTreeRegressor`]({{site.api_base_url}}/tree/decision_tree_regressor/index.html) for regression. 
 
@@ -621,11 +621,11 @@ Here we have used default parameter values but in practice you will almost alway
 
 ## Ensemble methods
 
-In ensemble learning we combine predictions from multiple base models to reduce the variance of predictions and decrease generalization error. Base models are assumed to be independent from each other. [Bagging](https://en.wikipedia.org/wiki/Bootstrap_aggregating) is one of the most streightforward ways to reduce correlation between base models in the ensemble. It works by taking repeated samples from the same training data set. As a result we generate _K_ different training data sets (bootstraps) that overlap but are not the same. We then train our base model on the each bootstrapped training set and average predictions for regression or use majority voting scheme for classification. 
+In ensemble learning we combine predictions from multiple base models to reduce the variance of predictions and decrease generalization error. Base models are assumed to be independent from each other. [Bagging](https://en.wikipedia.org/wiki/Bootstrap_aggregating) is one of the most straightforward ways to reduce correlation between base models in the ensemble. It works by taking repeated samples from the same training data set. As a result we generate _K_ different training data sets (bootstraps) that overlap but are not the same. We then train our base model on each bootstrapped training set and average predictions for regression or use majority voting scheme for classification. 
 
 ### Random Forest
 
-Random forest is an extension of bagging that also randomly selects a subset of features when training a tree. This improvement decorrelated the trees and hence decreases prediction error even more. Random forests have proven effective on a wide range of different predictive modeling problems. 
+Random forest is an extension of bagging that also randomly selects a subset of features when training a tree. This improvement decorrelates the trees and hence decreases prediction error even more. Random forests have proven effective on a wide range of different predictive modeling problems. 
 
 Let's fit [Random Forest regressor]({{site.api_base_url}}/ensemble/random_forest_regressor/index.html) to Boston Housing dataset:
 
@@ -659,7 +659,7 @@ println!("MSE: {}", mean_squared_error(&y_test, &y_hat_rf));
 
 You should get lower mean squared error here when compared to other methods from this manual. This is because by default Random Forest fits 100 independent trees to different bootstrapped training sets and calculates target value by averaging predictions from these trees.
 
-[Random Forest classifier]({{site.api_base_url}}/ensemble/random_forest_classifier/index.html) works in a similar manner. The only difference is that you prediction targets should be nominal or ordinal values (class label).
+[Random Forest classifier]({{site.api_base_url}}/ensemble/random_forest_classifier/index.html) works in a similar manner. The only difference is that your prediction targets should be nominal or ordinal values (class label).
 
 ## References
 * ["Nearest Neighbor Pattern Classification" Cover, T.M., IEEE Transactions on Information Theory (1967)](http://ssg.mit.edu/cal/abs/2000_spring/np_dens/classification/cover67.pdf)
