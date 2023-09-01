@@ -26,7 +26,7 @@ If you found a bug or problem please do not hesitate to report it by [opening an
 
 The best way to request a new feature is by [opening an issue](https://github.com/smartcorelib/smartcore/issues) in GitHub. When you submit your idea, please keep in mind these recommendations:
 
-* If you are requesting new algorithm, please add references to papers describing this algorithm. If you have a particular implementation in mind, feel free to share references to it as well. If not, we will do our best to find the best implementation available ourselves.
+* If you are requesting a new algorithm, please add references to papers describing this algorithm. If you have a particular implementation in mind, feel free to share references to it as well. If not, we will do our best to find the best implementation available ourselves.
 * Please tell us why this feature is important to you.
 
 ## Contributing code
@@ -43,6 +43,6 @@ To make sure your PR is swiftly approved and merged, please make sure new featur
 
 ## Changes to documentation
 
-If you found a problem in documentation please do not hesitate to correct it and submit your proposed change as a [pull request](https://github.com/smartcorelib/smartcore/pulls) (PR) in GutHub. At this moment documentation is found in several places: [API](https://github.com/smartcorelib/smartcore), [website](https://github.com/smartcorelib/smartcorelib.org) and [examples](https://github.com/smartcorelib/smartcore-examples). Please submit your pull request to a corresponding repository. If your change is a minor correction (e.g. misspelling or grammar error) there is no need to open a separate issue describing what you've found, just correct it and submit your PR!
+If you found a problem in documentation please do not hesitate to correct it and submit your proposed change as a [pull request](https://github.com/smartcorelib/smartcore/pulls) (PR) in GitHub. At this moment documentation is found in several places: [API](https://github.com/smartcorelib/smartcore), [website](https://github.com/smartcorelib/smartcorelib.org) and [examples](https://github.com/smartcorelib/smartcore-examples). Please submit your pull request to a corresponding repository. If your change is a minor correction (e.g. misspelling or grammar error) there is no need to open a separate issue describing what you've found, just correct it and submit your PR!
 
 Another way to make a change in documentation is to [open an issue](https://github.com/smartcorelib/smartcore/issues) in GitHub.
